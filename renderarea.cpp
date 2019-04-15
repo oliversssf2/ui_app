@@ -12,3 +12,13 @@ RenderArea::~RenderArea()
 {
     delete ui;
 }
+
+QSize RenderArea::sizeHint() const
+{
+    return QSize(640, 480);
+}
+
+QSize RenderArea::minimumSizeHint() const
+{
+    return QSize(640, 480);
+}

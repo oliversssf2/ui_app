@@ -20,7 +20,7 @@ public:
     QSize sizeHint() const override;
 
 protected:
-    void paintEvent(QPaintEvent *event) override;
+    //void paintEvent(QPaintEvent *event) override;
 
 private:
     Ui::RenderArea *ui;

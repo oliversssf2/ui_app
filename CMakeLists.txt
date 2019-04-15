@@ -20,6 +20,9 @@ target_sources(application
     PRIVATE renderarea.cpp
     PRIVATE renderarea.h
     PRIVATE renderarea.ui
+    PRIVATE pathplanner.cpp
+    PRIVATE pathplanner.h
+    PRIVATE pathplanner.ui
     )
 
 target_link_libraries(application
