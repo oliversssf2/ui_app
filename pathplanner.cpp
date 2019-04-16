@@ -18,8 +18,24 @@ pathPlanner::~pathPlanner()
 
 void pathPlanner::on_pushButton_2_clicked()
 {
-    ui->listWidget->addItem(" ");
-    updateName();
+    int index = ui->comboBox->currentIndex();
+    QString dir = QString(":/paths/%1.txt").arg(index);
+    QFile path(dir);
+    if(!path.exists())
+        qDebug() << "DOESN'T EXISTS";
+//    if(!path.open(QIODevice::ReadOnly | QIODevice::Text))
+//    {
+//        qDebug() << "Failed";
+//        return;
+//    }
+
+    if (!path.open(QIODevice::ReadOnly | QIODevice::Text))
+        return;
+    while(!path.atEnd())
+    {
+        QString t = path.readLine();
+        qDebug() << t;
+    }
 }
 
 void pathPlanner::on_pushButton_clicked()

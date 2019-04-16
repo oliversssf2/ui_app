@@ -2,6 +2,7 @@
 #define PATHPLANNER_H
 
 #include <QWidget>
+#include <QDebug>
 #include <renderarea.h>
 #include <helper.h>
 

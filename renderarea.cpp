@@ -22,3 +22,9 @@ QSize RenderArea::minimumSizeHint() const
 {
     return QSize(640, 480);
 }
+
+void RenderArea::paintEvent(QPaintEvent *event)
+{
+
+}
+

@@ -23,6 +23,7 @@ target_sources(application
     PRIVATE pathplanner.cpp
     PRIVATE pathplanner.h
     PRIVATE pathplanner.ui
+    PRIVATE "src/paths.qrc"
     )
 
 target_link_libraries(application
