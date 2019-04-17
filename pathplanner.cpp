@@ -20,21 +20,26 @@ void pathPlanner::on_pushButton_2_clicked()
 {
     int index = ui->comboBox->currentIndex();
     QString dir = QString(":/paths/%1.txt").arg(index);
+    qDebug() << dir;
     QFile path(dir);
-    if(!path.exists())
-        qDebug() << "DOESN'T EXISTS";
-//    if(!path.open(QIODevice::ReadOnly | QIODevice::Text))
-//    {
-//        qDebug() << "Failed";
-//        return;
-//    }
-
-    if (!path.open(QIODevice::ReadOnly | QIODevice::Text))
+    if (!path.open(QIODevice::ReadWrite))
+    {
+        qWarning() << "file open failed: " << dir;
         return;
+    }
+    QDataStream out(&path);
+    out << QString("HI");
+    out << qint32(989);
+    QDataStream in(&path);
+    cood t;
     while(!path.atEnd())
     {
-        QString t = path.readLine();
-        qDebug() << t;
+        QString x;
+        qint32 y;
+        in >> x >> y;
+        qDebug() << x << "and" << y;
+//        in >> t.x >> t.y;
+//        insPath.addInspectionPoint(t);
     }
 }
 

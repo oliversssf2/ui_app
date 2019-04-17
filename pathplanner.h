@@ -3,8 +3,14 @@
 
 #include <QWidget>
 #include <QDebug>
-#include <renderarea.h>
+#include <QtCore>
+#include <QString>
+#include <QDataStream>
+#include <QFile>
+#include <QList>
+
 #include <helper.h>
+#include <renderarea.h>
 
 namespace Ui {
 class pathPlanner;
@@ -27,6 +33,7 @@ private slots:
 private:
     Ui::pathPlanner *ui;
     RenderArea *rarea;
+    inspectionPath insPath;
 };
 
 #endif // PATHPLANNER_H

@@ -26,10 +26,10 @@ struct cood
 class inspectionPath
 {
 public:
-    inspectionPath() :  path{} {}
-    ~inspectionPath();
+    inspectionPath() = default;
+    ~inspectionPath() = default;
 
-    inline void addInspectionPoint(cood& point, int t);
+    inline void addInspectionPoint(cood& point, int t = -1);
     inline void removeInspectionPoint(size_t index);
 
     inline void operator=(const inspectionPath &path);
@@ -42,7 +42,12 @@ void inspectionPath::addInspectionPoint(cood& point, int t)
 {
     try {
         if(point.valid())
-            path.insert(path.begin()+t, point);
+        {
+            if(t == -1)
+                path.push_back(point);
+            else
+                path.insert(path.begin()+t, point);
+        }
     } catch (const std::out_of_range& oor) {
         std::cerr << "Out of Range Error: " << oor.what() << '\n';
     }
