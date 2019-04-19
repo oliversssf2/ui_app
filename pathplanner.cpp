@@ -19,28 +19,37 @@ pathPlanner::~pathPlanner()
 void pathPlanner::on_pushButton_2_clicked()
 {
     int index = ui->comboBox->currentIndex();
-    QString dir = QString(":/paths/%1.txt").arg(index);
+    QDir dir = QString(PATHSDIR);
     qDebug() << dir;
-    QFile path(dir);
-    if (!path.open(QIODevice::ReadWrite))
+    QString path = dir.absoluteFilePath("%1.txt").arg(index);
+    qDebug() << path;
+    QFile file(path);
+    if(!file.open(QIODevice::WriteOnly))
     {
-        qWarning() << "file open failed: " << dir;
+        qWarning() << file.error() << file.errorString();
         return;
     }
-    QDataStream out(&path);
-    out << QString("HI");
-    out << qint32(989);
-    QDataStream in(&path);
-    cood t;
-    while(!path.atEnd())
+    QDataStream out(&file);
+
+    write_coord(out, 12, 23, flags::next_line);
+    write_coord(out, 25, 435, flags::next_line);
+    write_coord(out, 734, 213, flags::next_line);
+    write_coord(out, 324, 234, flags::eof);
+
+    file.close();
+
+    if(!file.open(QIODevice::ReadOnly))
     {
-        QString x;
-        qint32 y;
-        in >> x >> y;
-        qDebug() << x << "and" << y;
-//        in >> t.x >> t.y;
-//        insPath.addInspectionPoint(t);
+        qWarning() << file.error() << file.errorString();
+        return;
     }
+
+    QDataStream in(&file);
+
+    inspectionPath k;
+    read_coord(in, k);
+
+    file.close();
 }
 
 void pathPlanner::on_pushButton_clicked()

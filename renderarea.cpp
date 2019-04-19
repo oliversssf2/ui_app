@@ -6,21 +6,13 @@ RenderArea::RenderArea(QWidget *parent) :
     ui(new Ui::RenderArea)
 {
     ui->setupUi(this);
+    resize(500, 500);
+    setSizePolicy(QSizePolicy::Policy::Fixed, QSizePolicy::Policy::Fixed);
 }
 
 RenderArea::~RenderArea()
 {
     delete ui;
-}
-
-QSize RenderArea::sizeHint() const
-{
-    return QSize(640, 480);
-}
-
-QSize RenderArea::minimumSizeHint() const
-{
-    return QSize(640, 480);
 }
 
 void RenderArea::paintEvent(QPaintEvent *event)

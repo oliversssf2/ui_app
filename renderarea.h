@@ -24,7 +24,7 @@ protected:
 
 private:
     Ui::RenderArea *ui;
-
+    inspectionPath path;
     QPixmap plane;
 
 };

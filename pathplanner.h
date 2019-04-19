@@ -11,6 +11,7 @@
 
 #include <helper.h>
 #include <renderarea.h>
+#include <config.h>
 
 namespace Ui {
 class pathPlanner;

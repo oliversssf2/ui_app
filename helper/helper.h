@@ -6,12 +6,14 @@
 #include <iostream>
 #include <vector>
 #include <stdexcept>
+#include <QDataStream>
+#include <QFile>
 
-struct cood
+struct coord
 {
     int x;
     int y;
-    bool valid()
+    inline bool valid()
     {
         auto ret = false;
         if(x >= 0 && y >= 0)
@@ -23,22 +25,33 @@ struct cood
     }
 };
 
+
+
 class inspectionPath
 {
+    inline friend void print_path(inspectionPath&);
 public:
     inspectionPath() = default;
     ~inspectionPath() = default;
 
-    inline void addInspectionPoint(cood& point, int t = -1);
+    inline void addInspectionPoint(coord& point, int t = -1);
     inline void removeInspectionPoint(size_t index);
 
     inline void operator=(const inspectionPath &path);
 private:
-    std::vector<cood> path;
+    std::vector<coord> path;
 
 };
 
-void inspectionPath::addInspectionPoint(cood& point, int t)
+void print_path(inspectionPath& path)
+{
+    for(auto &k : path.path)
+    {
+        std::cout << k.x << " and " << k.y << std::endl;
+    }
+}
+
+void inspectionPath::addInspectionPoint(coord& point, int t)
 {
     try {
         if(point.valid())
@@ -65,4 +78,36 @@ void inspectionPath::removeInspectionPoint(size_t index)
     }
 }
 
+enum flags{next_line, eof};
+inline void write_coord(QDataStream& out, qint32 x, qint32 y, flags flag)
+{
+    switch(flag){
+        case next_line:{
+            out << qint32(x) << qint32(y);
+            out << qint8(flag);
+            break;
+        }
+        case eof:{
+            out << qint32(x) << qint32(y);
+            out << qint8(flag);
+            break;
+        }
+    }
+}
+
+inline void read_coord(QDataStream& in, inspectionPath& path)
+{
+    qint32 x, y;
+    qint8 flag;
+    coord pt;
+    while(!in.atEnd())
+    {
+        in >> x >> y >> flag;
+        pt = coord{x,y};
+        if(pt.valid())
+            path.addInspectionPoint(pt);
+        if(flag == qint8(flags::eof))
+            break;
+    }
+}
 #endif // HELPER_H

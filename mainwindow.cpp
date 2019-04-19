@@ -15,6 +15,6 @@ MainWindow::~MainWindow()
 
 void MainWindow::on_pushButton_2_clicked()
 {
-    pathPlanner *wdg = new pathPlanner();
+    auto *wdg = new pathPlanner();
     wdg->show();
 }

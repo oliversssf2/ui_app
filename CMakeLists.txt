@@ -14,6 +14,8 @@ add_library(helper INTERFACE)
 target_include_directories(helper INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/helper/")
 target_sources(helper INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/helper/helper.h")
 
+add_subdirectory(cmake)
+
 add_executable(application)
 
 target_sources(application
@@ -28,6 +30,7 @@ target_sources(application
     PRIVATE pathplanner.h
     PRIVATE pathplanner.ui
     PRIVATE "src/paths.qrc"
+    PRIVATE "src/aircrafts.qrc"
     )
 
 target_link_libraries(application
@@ -36,3 +39,9 @@ target_link_libraries(application
     PRIVATE Qt5::Core
     PUBLIC helper
     )
+
+target_include_directories(application
+    PRIVATE "${CMAKE_CURRENT_BINARY_DIR}/cmake"
+    )
+
+add_subdirectory(tool)
