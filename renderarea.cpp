@@ -20,3 +20,8 @@ void RenderArea::paintEvent(QPaintEvent *event)
 
 }
 
+void RenderArea::setAircraft(inspectionPath& path, QImage& plane, qint32 index)
+{
+
+}
+

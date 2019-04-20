@@ -31,6 +31,9 @@ private slots:
     void on_pushButton_clicked();
     void updateName();
 
+signals:
+    void send(inspectionPath& path, QImage& plane, qint32 index);
+
 private:
     Ui::pathPlanner *ui;
     RenderArea *rarea;

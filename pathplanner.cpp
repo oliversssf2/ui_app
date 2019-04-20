@@ -8,6 +8,8 @@ pathPlanner::pathPlanner(QWidget *parent) :
     ui->setupUi(this);
     rarea = new RenderArea();
     ui->horizontalLayout->addWidget(rarea);
+
+    connect(this, &pathPlanner::send, rarea, &RenderArea::setAircraft);
 }
 
 pathPlanner::~pathPlanner()
@@ -48,7 +50,10 @@ void pathPlanner::on_pushButton_2_clicked()
 
     inspectionPath k;
     read_coord(in, k);
-
+    QDir aircraftDir(AIRCRAFTSDIR);
+    QString imageName = aircraftDir.absoluteFilePath("%1.png").arg(index);
+    QImage airplane(imageName);
+    send(k, airplane, index);
     file.close();
 }
 

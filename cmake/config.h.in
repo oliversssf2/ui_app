@@ -1,1 +1,3 @@
 #cmakedefine PATHSDIR "@PATHSDIR@"
+#cmakedefine AIRCRAFTSDIR "@AIRCRAFTSDIR@"
+

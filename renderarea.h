@@ -16,8 +16,9 @@ class RenderArea : public QWidget
 public:
     explicit RenderArea(QWidget *parent = nullptr);
     ~RenderArea();
-    QSize minimumSizeHint() const override;
-    QSize sizeHint() const override;
+
+public slots:
+    void setAircraft(inspectionPath& path, QImage& plane, qint32 index);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -25,8 +26,7 @@ protected:
 private:
     Ui::RenderArea *ui;
     inspectionPath path;
-    QPixmap plane;
-
+    QImage plane;
 };
 
 #endif // RENDERAREA_H
