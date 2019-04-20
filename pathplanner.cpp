@@ -21,6 +21,7 @@ pathPlanner::~pathPlanner()
 void pathPlanner::on_pushButton_2_clicked()
 {
     int index = ui->comboBox->currentIndex();
+    send(index);
     QDir dir = QString(PATHSDIR);
     qDebug() << dir;
     QString path = dir.absoluteFilePath("%1.txt").arg(index);
@@ -53,7 +54,6 @@ void pathPlanner::on_pushButton_2_clicked()
     QDir aircraftDir(AIRCRAFTSDIR);
     QString imageName = aircraftDir.absoluteFilePath("%1.png").arg(index);
     QImage airplane(imageName);
-    send(k, airplane, index);
     file.close();
 }
 
@@ -75,4 +75,4 @@ void pathPlanner::updateName()
         ui->listWidget->item(t)->setText(name);
 
     }
-   }
+}

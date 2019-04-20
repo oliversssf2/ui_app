@@ -11,7 +11,6 @@
 
 #include <helper.h>
 #include <renderarea.h>
-#include <config.h>
 
 namespace Ui {
 class pathPlanner;
@@ -32,7 +31,7 @@ private slots:
     void updateName();
 
 signals:
-    void send(inspectionPath& path, QImage& plane, qint32 index);
+    void send(qint32 index);
 
 private:
     Ui::pathPlanner *ui;

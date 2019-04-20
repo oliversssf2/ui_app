@@ -3,7 +3,9 @@
 
 #include <QWidget>
 #include <QtCore>
+#include <QPainter>
 #include <helper.h>
+#include <config.h>
 
 namespace Ui {
 class RenderArea;
@@ -18,14 +20,14 @@ public:
     ~RenderArea();
 
 public slots:
-    void setAircraft(inspectionPath& path, QImage& plane, qint32 index);
+    void setAircraft(qint32 index);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
 
 private:
     Ui::RenderArea *ui;
-    inspectionPath path;
+    inspectionPath inspath;
     QImage plane;
 };
 
