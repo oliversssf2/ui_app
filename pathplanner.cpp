@@ -6,6 +6,7 @@ pathPlanner::pathPlanner(QWidget *parent) :
     ui(new Ui::pathPlanner)
 {
     ui->setupUi(this);
+
     rarea = new RenderArea();
     ui->horizontalLayout->addWidget(rarea);
 

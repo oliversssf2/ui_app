@@ -7,6 +7,7 @@ RenderArea::RenderArea(QWidget *parent) :
     plane(QImage())
 {
     ui->setupUi(this);
+    this->resize(this->width(), this->width());
 }
 
 RenderArea::~RenderArea()
@@ -14,9 +15,15 @@ RenderArea::~RenderArea()
     delete ui;
 }
 
+void RenderArea::resizeEvent(QResizeEvent* event)
+{
+    this->resize(this->width(), this->width());
+}
+
+
 void RenderArea::paintEvent(QPaintEvent *event)
 {
-    QRectF target(0, 0, 500, 500);
+    QRectF target(0, 0, this->width(), this->height());
     QRectF source(0, 0, plane.width(), plane.height());
 
     QPainter painter(this);
