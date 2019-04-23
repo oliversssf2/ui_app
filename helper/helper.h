@@ -38,8 +38,9 @@ public:
     inline void removeInspectionPoint(size_t index);
 
     inline void operator=(const inspectionPath &path);
-private:
     std::vector<coord> path;
+private:
+
 
 };
 

@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 
 project(ui_app)
-set(CMAKE_PREFIX_PATH "/home/fongsu/Qt/5.12.0/gcc_64/lib/cmake/Qt5")
+set(CMAKE_PREFIX_PATH "/home/fongsu/Qt/5.12.2/gcc_64/lib/cmake/Qt5")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -15,6 +15,7 @@ target_include_directories(helper INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/helper/
 target_sources(helper INTERFACE "${CMAKE_CURRENT_SOURCE_DIR}/helper/helper.h")
 
 add_subdirectory(cmake)
+add_subdirectory(spline_library)
 
 add_executable(application)
 
@@ -38,6 +39,7 @@ target_link_libraries(application
     PRIVATE Qt5::Gui
     PRIVATE Qt5::Core
     PUBLIC helper
+    PRIVATE spline
     )
 
 target_include_directories(application
