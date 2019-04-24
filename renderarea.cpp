@@ -8,6 +8,8 @@ RenderArea::RenderArea(QWidget *parent) :
     mySpline({})
 {
     ui->setupUi(this);
+    ui->doubleSpinBox->setValue(25.0);
+    this->setFixedSize(800, 800);
     this->resize(this->width(), this->width()); //keep the plane image a square
 }
 
@@ -28,35 +30,57 @@ void RenderArea::paintEvent(QPaintEvent *event)
     QRectF source(0, 0, plane.width(), plane.height());
 
     QPainter painter(this);
-    mypainter = &painter;
 
     painter.drawImage(target, plane, source);
 
     if(initialized) // don't do this whan the data is no
     {
-        QPainterPath path;
-        path.moveTo(mySpline->getPosition(0)[0], mySpline->getPosition(0)[1]);
-
-        for(float i = 0.0f; i <= mySpline->getMaxT(); i+=0.05f)
+        if(splineReady)
         {
-            path.lineTo(mySpline->getPosition(i)[0], mySpline->getPosition(i)[1]);
+            QPainterPath path;
+            path.moveTo(mySpline->getPosition(0)[0], mySpline->getPosition(0)[1]);
+
+            for(double i = 0; i <= mySpline->getMaxT(); i+=0.01) // draw the path by consistently drawing straight lines between interpolated coordinate on the spline
+            {
+                    path.lineTo(mySpline->getPosition(i)[0], mySpline->getPosition(i)[1]);
+            }
+
+            path.moveTo(mySpline->getPosition(0)[0], mySpline->getPosition(0)[1]);
+            painter.drawPath(path);
+
+            for(double i = 0.0, lastpoint = -0.01; i <= mySpline->getMaxT(); i+=0.01)
+            {
+                if(mySpline->arcLength(i, lastpoint) >= pathDensity)
+                {
+                    lastpoint = i;
+                    painter.save();// save the state of the painter(EG rotation, translation, penstyel blah blah blah)
+
+                    auto slope = mySpline->getTangent(i);
+                    auto tiltRadian = std::atan2(slope.tangent.y(), slope.tangent.x());
+                    auto tiltDegree = qRadiansToDegrees(tiltRadian);
+                    painter.translate(mySpline->getPosition(i)[0], mySpline->getPosition(i)[1]); //translate the painter to the goal position
+                    painter.rotate(tiltDegree); //rotate the painter according to the tangent
+
+                    painter.drawRect(-10, -10, 20, 20); //draw the rectangle
+                    painter.restore();// restore the saved state so the rotation and translation won't affect the next iteration
+                }
+            }
         }
-
-        path.moveTo(mySpline->getPosition(0)[0], mySpline->getPosition(0)[1]);
-
-        for(float i = 0.0f; i <= mySpline->getMaxT(); i+=0.05f)
+        else
         {
-            QRectF box(QPointF(mySpline->getPosition(i)[0]+20, mySpline->getPosition(i)[1]+20), QPointF(mySpline->getPosition(i)[0]-20, mySpline->getPosition(i)[1]-20));
-            painter.drawRect(box);
-            auto slope = mySpline->getTangent(i);
-            auto tiltAng = qAtan2(slope.tangent.y(), slope.tangent.x());
-            painter.rotate(tiltAng);
-        }
+            QPainterPath path;
+            path.moveTo(splinePoints[0].x(), splinePoints[0].y()); //move the QPen to the first spot
 
-        painter.rotate(rand());
-        painter.drawPath(path);
-    }    
-    mypainter = nullptr;
+            for(int i = 0; i < splinePoints.size(); i++)
+            {
+                path.lineTo(splinePoints[i].x(), splinePoints[i].y());
+            }
+            path.lineTo(splinePoints[0].x(), splinePoints[0].y()); // move to the first spot again to close the shape
+            painter.drawPath(path);
+        }
+    initialized = false;
+    splineReady = false;
+    }
 }
 
 void RenderArea::setAircraft(qint32 index)
@@ -94,16 +118,14 @@ void RenderArea::setAircraft(qint32 index)
     read_coord(in, inspath);
     file.close();
 
-    for(auto &k : inspath.path)
-    {
-        splinePoints.push_back(QVector2D(k.x, k.y));
-    }
+    toSplinePoints(inspath, splinePoints);
     std::cout << splinePoints.size() << std::endl;
 
     QDir aircraftDir(AIRCRAFTSDIR);
     QString imageName = QString(":/aircrafts/%1.png").arg(index);
     plane =  QImage(imageName);
 
+    emit updateList(splinePoints.size());
     updateSpline();
 }
 
@@ -117,8 +139,33 @@ void RenderArea::on_pushButton_clicked()
 void RenderArea::updateSpline()
 {
     mySpline = createSpline();
-    initialized = true;
+    if(splinePoints.size() >= 1)
+        initialized = true;
+    if(splinePoints.size()>=4)
+        splineReady = true;
     std::cout << mySpline->getMaxT() << std::endl;
     std::cout << mySpline->isLooping() << std::endl;
     repaint();
+}
+
+void RenderArea::on_doubleSpinBox_valueChanged(double arg1)
+{
+    pathDensity = arg1;
+}
+
+void RenderArea::on_pushButton_2_clicked()
+{
+    emit queryIndex();
+}
+
+void RenderArea::recieve_index(qint32 index)
+{
+    ui->label_2->setNum(index);
+}
+
+void RenderArea::removePoint(qint32 index)
+{
+    splinePoints.erase(splinePoints.begin()+index);
+    updateSpline();
+
 }

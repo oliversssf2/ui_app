@@ -10,6 +10,7 @@
 #include <helper.h>
 #include <config.h>
 #include <vector>
+#include <cmath>
 
 
 
@@ -30,6 +31,13 @@ public:
 
 public slots:
     void setAircraft(qint32 index);
+    void recieve_index(qint32);
+    void removePoint(qint32 index);
+    inline int getSplineSize(){return splinePoints.size();}
+
+signals:
+    void queryIndex();
+    void updateList(qint32);
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -37,9 +45,14 @@ protected:
     void printPath(QPainter& painter);
     void updateSpline();
     std::shared_ptr<LoopingUniformCRSpline<QVector2D>> createSpline(){ return std::make_shared<LoopingUniformCRSpline<QVector2D>>(splinePoints); }
+    void drawPath();
 
 private slots:
     void on_pushButton_clicked();
+
+    void on_doubleSpinBox_valueChanged(double arg1);
+
+    void on_pushButton_2_clicked();
 
 private:
     Ui::RenderArea *ui;
@@ -49,6 +62,25 @@ private:
     QImage plane;
     QPainter* mypainter = nullptr;
     bool initialized = false;
+    bool splineReady = false;
+    double pathDensity;
 };
+
+inline void toSplinePoints(inspectionPath& inspath, std::vector<QVector2D>& splinePoints)
+{
+    for(auto &k : inspath.path)
+    {
+        splinePoints.push_back(QVector2D(k.x, k.y));
+    }
+}
+
+inline void toinsPath(std::vector<QVector2D>& splinePoints, inspectionPath& inspath)
+{
+    inspath.path.clear();
+    for(auto &k : splinePoints)
+    {
+        inspath.path.push_back(coord{int(k.x()), int(k.y())});
+    }
+}
 
 #endif // RENDERAREA_H

@@ -10,7 +10,11 @@ pathPlanner::pathPlanner(QWidget *parent) :
     rarea = new RenderArea();
     ui->horizontalLayout->addWidget(rarea);
 
-    connect(this, &pathPlanner::send, rarea, &RenderArea::setAircraft);
+    connect(this, &pathPlanner::sendPlaneModel, rarea, &RenderArea::setAircraft);
+    connect(rarea, &RenderArea::queryIndex, this, &pathPlanner::recieveIndexQuery);
+    connect(this, &pathPlanner::send_index, rarea, &RenderArea::recieve_index);
+    connect(rarea, &RenderArea::updateList, this, &pathPlanner::updateList);
+    connect(this, &pathPlanner::removePoint, rarea, &RenderArea::removePoint);
 }
 
 pathPlanner::~pathPlanner()
@@ -22,50 +26,28 @@ pathPlanner::~pathPlanner()
 void pathPlanner::on_pushButton_2_clicked()
 {
     int index = ui->comboBox->currentIndex();
-    send(index);
-    QDir dir = QString(PATHSDIR);
-    qDebug() << dir;
-    QString path = dir.absoluteFilePath("%1.txt").arg(index);
-    qDebug() << path;
-    QFile file(path);
-    if(!file.open(QIODevice::WriteOnly))
-    {
-        qWarning() << file.error() << file.errorString();
-        return;
-    }
-    QDataStream out(&file);
-
-    write_coord(out, 12, 23, flags::next_line);
-    write_coord(out, 25, 435, flags::next_line);
-    write_coord(out, 734, 213, flags::next_line);
-    write_coord(out, 324, 234, flags::eof);
-
-    file.close();
-
-    if(!file.open(QIODevice::ReadOnly))
-    {
-        qWarning() << file.error() << file.errorString();
-        return;
-    }
-
-    QDataStream in(&file);
-
-    inspectionPath k;
-    read_coord(in, k);
-    QDir aircraftDir(AIRCRAFTSDIR);
-    QString imageName = aircraftDir.absoluteFilePath("%1.png").arg(index);
-    QImage airplane(imageName);
-    file.close();
+    sendPlaneModel(index);
 }
 
-void pathPlanner::on_pushButton_clicked()
+void pathPlanner::on_pushButton_clicked() // remove point
 {
-    QList<QListWidgetItem*> items = ui->listWidget->selectedItems();
-    foreach(QListWidgetItem * item, items)
+    if(rarea->getSplineSize() > 4)
     {
-        delete ui->listWidget->takeItem(ui->listWidget->row(item));
+        int index = ui->listWidget->currentRow();
+        //std::cout << "index is: " << index << std::endl;
+        emit removePoint(index);
+        //The spline library need at least 4 points or it will terminate the whole program
+        delete ui->listWidget->takeItem(index);
+        updateName();
     }
-    updateName();
+    else {
+        QMessageBox::warning(
+                    this,
+                    tr("WARNING"),
+                    tr("CANNOT REMOVE POINT WHEN THERE ARE LESS THAN FOUR!")
+                    );
+    }
+
 }
 
 void pathPlanner::updateName()
@@ -76,4 +58,25 @@ void pathPlanner::updateName()
         ui->listWidget->item(t)->setText(name);
 
     }
+}
+
+void pathPlanner::recieveIndexQuery()
+{
+    emit send_index(ui->listWidget->currentRow());
+}
+
+void pathPlanner::on_pushButton_3_clicked()
+{
+    ui->listWidget->addItem("anything");
+    updateName();
+}
+
+void pathPlanner::updateList(qint32 size)
+{
+    ui->listWidget->clear();
+    for(int i = 0; i != size; i++)
+    {
+        ui->listWidget->addItem("h");
+    }
+    updateName();
 }

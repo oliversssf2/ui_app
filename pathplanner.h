@@ -8,6 +8,7 @@
 #include <QDataStream>
 #include <QFile>
 #include <QList>
+#include <QMessageBox>
 
 #include <helper.h>
 #include <renderarea.h>
@@ -29,9 +30,15 @@ private slots:
 
     void on_pushButton_clicked();
     void updateName();
+    void recieveIndexQuery();
+
+    void on_pushButton_3_clicked();
+    void updateList(qint32 size);
 
 signals:
-    void send(qint32 index);
+    void sendPlaneModel(qint32 fileindex);
+    void send_index(qint32 index); // send the index of the selected item in the combobox(start from 1 not 0)
+    void removePoint(qint32 index);
 
 private:
     Ui::pathPlanner *ui;
