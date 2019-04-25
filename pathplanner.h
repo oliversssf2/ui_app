@@ -32,6 +32,8 @@ private slots:
     void updateName();
     void recieveIndexQuery();
 
+    void recieveAddPointQuery(QPointF pos);
+
     void on_pushButton_3_clicked();
     void updateList(qint32 size);
 
@@ -39,6 +41,7 @@ signals:
     void sendPlaneModel(qint32 fileindex);
     void send_index(qint32 index); // send the index of the selected item in the combobox(start from 1 not 0)
     void removePoint(qint32 index);
+    void addPoint(QPointF pos, int index);
 
 private:
     Ui::pathPlanner *ui;

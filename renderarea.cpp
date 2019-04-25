@@ -87,48 +87,55 @@ void RenderArea::setAircraft(qint32 index)
 {
     QDir dir = QString(PATHSDIR);
     qDebug() << dir;
-    QString path = dir.absoluteFilePath("%1.txt").arg(index);
-    qDebug() << path;
-    QFile file(path);
-    if(!file.open(QIODevice::WriteOnly))
-    {
-        qWarning() << file.error() << file.errorString();
-        return;
-    }
-    QDataStream out(&file);
+    filePath = dir.absoluteFilePath("%1.txt").arg(index);
+    qDebug() << filePath;
+//    QFile file(filePath);
+//    if(!file.open(QIODevice::WriteOnly))
+//    {
+//        qWarning() << file.error() << file.errorString();
+//        return;
+//    }
+//    QDataStream out(&file);
 
-    write_coord(out, 345, 23, flags::next_line);
-    write_coord(out, 25, 435, flags::next_line);
-    write_coord(out, 734, 213, flags::next_line);
-    write_coord(out, 354, 227, flags::next_line);
-    write_coord(out, 254, 153, flags::next_line);
-    write_coord(out, 324, 234, flags::next_line);
-    write_coord(out, 345, 23, flags::eof);
+//    write_coord(out, 345, 23, flags::next_line);
+//    write_coord(out, 25, 435, flags::next_line);
+//    write_coord(out, 734, 213, flags::next_line);
+//    write_coord(out, 354, 227, flags::next_line);
+//    write_coord(out, 254, 153, flags::next_line);
+//    write_coord(out, 324, 234, flags::next_line);
+//    write_coord(out, 345, 23, flags::eof);
 
 
-    file.close();
+//    file.close();
 
-    if(!file.open(QIODevice::ReadOnly))
-    {
-        qWarning() << file.error() << file.errorString();
-        return;
-    }
+//    if(!file.open(QIODevice::ReadOnly))
+//    {
+//        qWarning() << file.error() << file.errorString();
+//        return;
+//    }
 
-    QDataStream in(&file);
-    read_coord(in, inspath);
-    file.close();
+//    QDataStream in(&file);
+//    read_coord(in, inspath);
+//    file.close();
 
-    toSplinePoints(inspath, splinePoints);
-    std::cout << splinePoints.size() << std::endl;
+//    toSplinePoints(inspath, splinePoints);
+//    std::cout << splinePoints.size() << std::endl;
 
     QDir aircraftDir(AIRCRAFTSDIR);
-    QString imageName = QString(":/aircrafts/%1.png").arg(index);
+    imageName = QString(":/aircrafts/%1.png").arg(index);
     plane =  QImage(imageName);
 
     emit updateList(splinePoints.size());
     updateSpline();
 }
 
+void RenderArea::mousePressEvent(QMouseEvent *event)
+{
+    QPointF pos = event->pos();
+    std::cout << "pos is: "  << pos.x() << " " << pos.y() << std::endl;
+    if((pos.x() <= width()) && (pos.y() <= height())) // check the validity of adding pos
+        emit addPointQuery(pos);
+}
 
 
 void RenderArea::on_pushButton_clicked()
@@ -138,13 +145,21 @@ void RenderArea::on_pushButton_clicked()
 
 void RenderArea::updateSpline()
 {
-    mySpline = createSpline();
+
     if(splinePoints.size() >= 1)
+    {
         initialized = true;
+        std::cout << "LESS THAN 4 POINTS, DRAW STRAIGHT LINE INSTEAD OF SPLINE" << std::endl;
+    }
+
     if(splinePoints.size()>=4)
+    {
+        mySpline = createSpline();
         splineReady = true;
-    std::cout << mySpline->getMaxT() << std::endl;
-    std::cout << mySpline->isLooping() << std::endl;
+        std::cout << mySpline->getMaxT() << std::endl;
+        std::cout << mySpline->isLooping() << std::endl;
+    }
+
     repaint();
 }
 
@@ -167,5 +182,13 @@ void RenderArea::removePoint(qint32 index)
 {
     splinePoints.erase(splinePoints.begin()+index);
     updateSpline();
+}
 
+void RenderArea::addPoint(QPointF pos, int index)
+{
+    if(index = -1) // when no points are chosen index are set to -1
+        splinePoints.push_back(QVector2D{float(pos.x()), float(pos.y())});
+    else
+        splinePoints.insert(splinePoints.begin()+index, QVector2D{float(pos.x()), float(pos.y())});
+    updateSpline();
 }

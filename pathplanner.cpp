@@ -15,6 +15,8 @@ pathPlanner::pathPlanner(QWidget *parent) :
     connect(this, &pathPlanner::send_index, rarea, &RenderArea::recieve_index);
     connect(rarea, &RenderArea::updateList, this, &pathPlanner::updateList);
     connect(this, &pathPlanner::removePoint, rarea, &RenderArea::removePoint);
+    connect(rarea, &RenderArea::addPointQuery, this, &pathPlanner::recieveAddPointQuery);
+    connect(this, &pathPlanner::addPoint, rarea, &RenderArea::addPoint);
 }
 
 pathPlanner::~pathPlanner()
@@ -71,6 +73,8 @@ void pathPlanner::on_pushButton_3_clicked()
     updateName();
 }
 
+
+
 void pathPlanner::updateList(qint32 size)
 {
     ui->listWidget->clear();
@@ -79,4 +83,13 @@ void pathPlanner::updateList(qint32 size)
         ui->listWidget->addItem("h");
     }
     updateName();
+}
+
+void pathPlanner::recieveAddPointQuery(QPointF pos)
+{
+    auto index = ui->listWidget->currentRow();
+    std::cout << "index is: " << index << std::endl;
+    ui->listWidget->addItem("anything");
+    updateName();
+    emit addPoint(pos, index);
 }
