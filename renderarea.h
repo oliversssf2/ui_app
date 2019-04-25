@@ -7,6 +7,7 @@
 #include <QVector2D>
 #include <QtMath>
 #include <QMouseEvent>
+#include <QMessageBox>
 
 #include <helper.h>
 #include <config.h>
@@ -36,6 +37,7 @@ public slots:
     void removePoint(qint32 index);
     inline int getSplineSize(){return splinePoints.size();}
     void addPoint(QPointF pos, int index);
+    void loadPath();
 
 signals:
     void queryIndex();

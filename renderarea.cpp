@@ -192,3 +192,46 @@ void RenderArea::addPoint(QPointF pos, int index)
         splinePoints.insert(splinePoints.begin()+index, QVector2D{float(pos.x()), float(pos.y())});
     updateSpline();
 }
+
+void RenderArea::loadPath()
+{
+    if(filePath.isEmpty()){ QMessageBox::warning(this, "WARNING!!!", "YOU HAVEN'T SPECIFIED THE MODEL YET");}
+    else
+    {
+        QFile file(filePath);
+        if(!file.open(QIODevice::ReadOnly))
+        {
+            qWarning() << file.error() << file.errorString();
+            return;
+        }
+
+        QDataStream in(&file);
+        if(read_coord(in, inspath))
+        {
+
+            toSplinePoints(inspath, splinePoints);
+            std::cout << splinePoints.size() << std::endl;
+        };
+        file.close();
+    }
+
+//        if(!file.open(QIODevice::WriteOnly))
+//        {
+//            qWarning() << file.error() << file.errorString();
+//            return;
+//        }
+//        QDataStream out(&file);
+
+//        write_coord(out, 345, 23, flags::next_line);
+//        write_coord(out, 25, 435, flags::next_line);
+//        write_coord(out, 734, 213, flags::next_line);
+//        write_coord(out, 354, 227, flags::next_line);
+//        write_coord(out, 254, 153, flags::next_line);
+//        write_coord(out, 324, 234, flags::next_line);
+//        write_coord(out, 345, 23, flags::eof);
+
+
+//        file.close();
+
+
+}

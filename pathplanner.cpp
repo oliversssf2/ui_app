@@ -17,6 +17,7 @@ pathPlanner::pathPlanner(QWidget *parent) :
     connect(this, &pathPlanner::removePoint, rarea, &RenderArea::removePoint);
     connect(rarea, &RenderArea::addPointQuery, this, &pathPlanner::recieveAddPointQuery);
     connect(this, &pathPlanner::addPoint, rarea, &RenderArea::addPoint);
+    connect(this, &pathPlanner::loadPath, rarea, &RenderArea::loadPath);
 }
 
 pathPlanner::~pathPlanner()
@@ -33,7 +34,7 @@ void pathPlanner::on_pushButton_2_clicked()
 
 void pathPlanner::on_pushButton_clicked() // remove point
 {
-    if(rarea->getSplineSize() > 4)
+    if(ui->listWidget->count()>0)
     {
         int index = ui->listWidget->currentRow();
         //std::cout << "index is: " << index << std::endl;
@@ -41,13 +42,6 @@ void pathPlanner::on_pushButton_clicked() // remove point
         //The spline library need at least 4 points or it will terminate the whole program
         delete ui->listWidget->takeItem(index);
         updateName();
-    }
-    else {
-        QMessageBox::warning(
-                    this,
-                    tr("WARNING"),
-                    tr("CANNOT REMOVE POINT WHEN THERE ARE LESS THAN FOUR!")
-                    );
     }
 
 }
@@ -69,9 +63,9 @@ void pathPlanner::recieveIndexQuery()
 
 void pathPlanner::on_pushButton_3_clicked()
 {
-    ui->listWidget->addItem("anything");
-    updateName();
+    emit loadPath();
 }
+
 
 
 

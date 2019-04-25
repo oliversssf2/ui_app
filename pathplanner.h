@@ -42,6 +42,7 @@ signals:
     void send_index(qint32 index); // send the index of the selected item in the combobox(start from 1 not 0)
     void removePoint(qint32 index);
     void addPoint(QPointF pos, int index);
+    void loadPath();
 
 private:
     Ui::pathPlanner *ui;

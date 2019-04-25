@@ -96,19 +96,23 @@ inline void write_coord(QDataStream& out, qint32 x, qint32 y, flags flag)
     }
 }
 
-inline void read_coord(QDataStream& in, inspectionPath& path)
+inline bool read_coord(QDataStream& in, inspectionPath& path)
 {
+    if(in.atEnd()) {std::cerr << "EMPTY FILE" << std::endl; return false;}
     qint32 x, y;
     qint8 flag;
     coord pt;
-    while(!in.atEnd())
+    while(true)
     {
         in >> x >> y >> flag;
         pt = coord{x,y};
         if(pt.valid())
             path.addInspectionPoint(pt);
         if(flag == qint8(flags::eof))
+        {
+            std::cout << "read ended" << std::endl;
             break;
+        }
     }
 }
 #endif // HELPER_H
