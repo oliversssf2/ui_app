@@ -39,6 +39,8 @@ private slots:
 
     void on_pushButton_4_clicked();
 
+    void on_flipButton_clicked();
+
 signals:
     void sendPlaneModel(qint32 fileindex);
     void send_index(qint32 index); // send the index of the selected item in the combobox(start from 1 not 0)
@@ -46,6 +48,7 @@ signals:
     void addPoint(QPointF pos, int index);
     void loadPath();
     void savePath();
+    void flip();
 
 private:
     Ui::pathPlanner *ui;

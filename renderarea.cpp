@@ -246,3 +246,11 @@ void RenderArea::loadPath()
     }
     updateSpline();
 }
+
+void RenderArea::flip()
+{
+    for(auto k = splinePoints.end(); k!=splinePoints.begin(); k--)
+    {
+        emit addPointQuery(QPointF((k-1)->x(), ((k-1)->y())));
+    }
+}

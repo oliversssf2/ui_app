@@ -39,6 +39,7 @@ public slots:
     void addPoint(QPointF pos, int index);
     void loadPath();
     void savePath();
+    void flip();
 
 signals:
     void queryIndex();

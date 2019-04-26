@@ -10,7 +10,7 @@ pathPlanner::pathPlanner(QWidget *parent) :
     rarea = new RenderArea();
     ui->horizontalLayout->addWidget(rarea);
 
-    ui->listWidget->setSelectionMode(QAbstractItemView::ExtendedSelection); // enable multiple selection, returns the largest index if only 1 index is needed
+    ui->listWidget->setSelectionMode(QAbstractItemView::ExtendedSelection); // enable multiple selection, returns the smallest index if only 1 index is needed
 
     connect(this, &pathPlanner::sendPlaneModel, rarea, &RenderArea::setAircraft);
     connect(rarea, &RenderArea::queryIndex, this, &pathPlanner::recieveIndexQuery);
@@ -22,6 +22,7 @@ pathPlanner::pathPlanner(QWidget *parent) :
     connect(this, &pathPlanner::loadPath, rarea, &RenderArea::loadPath);
     connect(this, & pathPlanner::savePath, rarea, &RenderArea::savePath);
     connect(rarea, &RenderArea::updateName, this, &pathPlanner::updateName);
+    connect(this, &pathPlanner::flip, rarea, &RenderArea::flip);
 }
 
 pathPlanner::~pathPlanner()
@@ -103,4 +104,10 @@ void pathPlanner::recieveAddPointQuery(QPointF pos)
 void pathPlanner::on_pushButton_4_clicked()
 {
     emit savePath();
+}
+
+
+void pathPlanner::on_flipButton_clicked()
+{
+    emit flip();
 }
