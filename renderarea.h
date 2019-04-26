@@ -38,11 +38,13 @@ public slots:
     inline int getSplineSize(){return splinePoints.size();}
     void addPoint(QPointF pos, int index);
     void loadPath();
+    void savePath();
 
 signals:
     void queryIndex();
     void updateList(qint32);
     void addPointQuery(QPointF pos);
+    void updateName();
 
 protected:
     void paintEvent(QPaintEvent *event) override;
@@ -50,7 +52,7 @@ protected:
     void mousePressEvent(QMouseEvent *event) override;
     void printPath(QPainter& painter);
     void updateSpline();
-    std::shared_ptr<LoopingUniformCRSpline<QVector2D>> createSpline(){ return std::make_shared<LoopingUniformCRSpline<QVector2D>>(splinePoints); }
+    std::shared_ptr<LoopingUniformCRSpline<QVector2D>> createSpline(){ return std::make_shared<LoopingUniformCRSpline<QVector2D>>(splinePoints); emit updateName();}
     void drawPath();
 
 private slots:

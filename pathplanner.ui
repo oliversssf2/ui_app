@@ -175,7 +175,7 @@
          <item row="2" column="0">
           <widget class="QPushButton" name="pushButton_3">
            <property name="text">
-            <string>add</string>
+            <string>loadpath</string>
            </property>
           </widget>
          </item>

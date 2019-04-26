@@ -114,5 +114,6 @@ inline bool read_coord(QDataStream& in, inspectionPath& path)
             break;
         }
     }
+    return true;
 }
 #endif // HELPER_H

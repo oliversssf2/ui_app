@@ -10,6 +10,8 @@ pathPlanner::pathPlanner(QWidget *parent) :
     rarea = new RenderArea();
     ui->horizontalLayout->addWidget(rarea);
 
+    ui->listWidget->setSelectionMode(QAbstractItemView::ExtendedSelection); // enable multiple selection, returns the largest index if only 1 index is needed
+
     connect(this, &pathPlanner::sendPlaneModel, rarea, &RenderArea::setAircraft);
     connect(rarea, &RenderArea::queryIndex, this, &pathPlanner::recieveIndexQuery);
     connect(this, &pathPlanner::send_index, rarea, &RenderArea::recieve_index);
@@ -18,6 +20,8 @@ pathPlanner::pathPlanner(QWidget *parent) :
     connect(rarea, &RenderArea::addPointQuery, this, &pathPlanner::recieveAddPointQuery);
     connect(this, &pathPlanner::addPoint, rarea, &RenderArea::addPoint);
     connect(this, &pathPlanner::loadPath, rarea, &RenderArea::loadPath);
+    connect(this, & pathPlanner::savePath, rarea, &RenderArea::savePath);
+    connect(rarea, &RenderArea::updateName, this, &pathPlanner::updateName);
 }
 
 pathPlanner::~pathPlanner()
@@ -37,11 +41,18 @@ void pathPlanner::on_pushButton_clicked() // remove point
     if(ui->listWidget->count()>0)
     {
         int index = ui->listWidget->currentRow();
-        //std::cout << "index is: " << index << std::endl;
-        emit removePoint(index);
-        //The spline library need at least 4 points or it will terminate the whole program
-        delete ui->listWidget->takeItem(index);
-        updateName();
+        if(index >= 0)
+        {
+            std::cout << index << std::endl;
+            //std::cout << "index is: " << index << std::endl;
+            emit removePoint(index);
+            //The spline library need at least 4 points or it will terminate the whole program
+            delete ui->listWidget->takeItem(index);
+            updateName();
+        }
+        else {
+            QMessageBox::warning(this, "WARNING!!!", "SELECT BEFORE REMOVING A POINT");
+        }
     }
 
 }
@@ -82,8 +93,14 @@ void pathPlanner::updateList(qint32 size)
 void pathPlanner::recieveAddPointQuery(QPointF pos)
 {
     auto index = ui->listWidget->currentRow();
-    std::cout << "index is: " << index << std::endl;
+    if(index >= 0)
+        std::cout << "index is: " << index << std::endl;
     ui->listWidget->addItem("anything");
     updateName();
     emit addPoint(pos, index);
+}
+
+void pathPlanner::on_pushButton_4_clicked()
+{
+    emit savePath();
 }

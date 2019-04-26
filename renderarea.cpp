@@ -31,6 +31,28 @@ void RenderArea::paintEvent(QPaintEvent *event)
 
     QPainter painter(this);
 
+    //Pen for drawing path...
+    QPen penForPath;
+    penForPath.setStyle(Qt::DashLine);
+    penForPath.setColor(QColor(0, 204, 102));
+    penForPath.setCapStyle(Qt::RoundCap);
+    penForPath.setJoinStyle(Qt::RoundJoin);
+    penForPath.setWidth(6);
+
+    QPen penForRobot;
+    penForRobot.setStyle(Qt::SolidLine);
+    penForRobot.setColor(QColor(51, 153, 255));
+    penForRobot.setCapStyle(Qt::RoundCap);
+    penForRobot.setJoinStyle(Qt::RoundJoin);
+    penForRobot.setWidth(4);
+
+    QPen penForEllipse;
+    penForEllipse.setStyle(Qt::SolidLine);
+    penForEllipse.setColor(QColor(255, 153, 51));
+    penForEllipse.setCapStyle(Qt::RoundCap);
+    penForEllipse.setJoinStyle(Qt::RoundJoin);
+    penForEllipse.setWidth(2);
+
     painter.drawImage(target, plane, source);
 
     if(initialized) // don't do this whan the data is no
@@ -38,6 +60,7 @@ void RenderArea::paintEvent(QPaintEvent *event)
         if(splineReady)
         {
             QPainterPath path;
+            painter.setPen(penForPath);
             path.moveTo(mySpline->getPosition(0)[0], mySpline->getPosition(0)[1]);
 
             for(double i = 0; i <= mySpline->getMaxT(); i+=0.01) // draw the path by consistently drawing straight lines between interpolated coordinate on the spline
@@ -48,8 +71,10 @@ void RenderArea::paintEvent(QPaintEvent *event)
             path.moveTo(mySpline->getPosition(0)[0], mySpline->getPosition(0)[1]);
             painter.drawPath(path);
 
+
             for(double i = 0.0, lastpoint = -0.01; i <= mySpline->getMaxT(); i+=0.01)
             {
+                painter.setPen(penForRobot);
                 if(mySpline->arcLength(i, lastpoint) >= pathDensity)
                 {
                     lastpoint = i;
@@ -65,10 +90,19 @@ void RenderArea::paintEvent(QPaintEvent *event)
                     painter.restore();// restore the saved state so the rotation and translation won't affect the next iteration
                 }
             }
+            for(int i = 0; i < mySpline->getMaxT(); i++)
+            {
+                painter.setPen(penForEllipse);
+                painter.drawEllipse(QPointF(mySpline->getPosition(i).x(), mySpline->getPosition(i).y()), 5, 5);
+                painter.drawEllipse(QPointF(mySpline->getPosition(i).x(), mySpline->getPosition(i).y()), 10, 10);
+
+            }
         }
         else
         {
             QPainterPath path;
+            painter.setPen(penForPath);
+
             path.moveTo(splinePoints[0].x(), splinePoints[0].y()); //move the QPen to the first spot
 
             for(int i = 0; i < splinePoints.size(); i++)
@@ -77,9 +111,18 @@ void RenderArea::paintEvent(QPaintEvent *event)
             }
             path.lineTo(splinePoints[0].x(), splinePoints[0].y()); // move to the first spot again to close the shape
             painter.drawPath(path);
+
+            for(auto &k : splinePoints)
+            {
+                painter.setPen(penForEllipse);
+                painter.drawEllipse(QPointF(k.x(), k.y()), 5, 5);
+                painter.drawEllipse(QPointF(k.x(), k.y()), 10, 10);
+
+            }
         }
-    initialized = false;
-    splineReady = false;
+
+        initialized = false;
+        splineReady = false;
     }
 }
 
@@ -89,37 +132,6 @@ void RenderArea::setAircraft(qint32 index)
     qDebug() << dir;
     filePath = dir.absoluteFilePath("%1.txt").arg(index);
     qDebug() << filePath;
-//    QFile file(filePath);
-//    if(!file.open(QIODevice::WriteOnly))
-//    {
-//        qWarning() << file.error() << file.errorString();
-//        return;
-//    }
-//    QDataStream out(&file);
-
-//    write_coord(out, 345, 23, flags::next_line);
-//    write_coord(out, 25, 435, flags::next_line);
-//    write_coord(out, 734, 213, flags::next_line);
-//    write_coord(out, 354, 227, flags::next_line);
-//    write_coord(out, 254, 153, flags::next_line);
-//    write_coord(out, 324, 234, flags::next_line);
-//    write_coord(out, 345, 23, flags::eof);
-
-
-//    file.close();
-
-//    if(!file.open(QIODevice::ReadOnly))
-//    {
-//        qWarning() << file.error() << file.errorString();
-//        return;
-//    }
-
-//    QDataStream in(&file);
-//    read_coord(in, inspath);
-//    file.close();
-
-//    toSplinePoints(inspath, splinePoints);
-//    std::cout << splinePoints.size() << std::endl;
 
     QDir aircraftDir(AIRCRAFTSDIR);
     imageName = QString(":/aircrafts/%1.png").arg(index);
@@ -127,6 +139,24 @@ void RenderArea::setAircraft(qint32 index)
 
     emit updateList(splinePoints.size());
     updateSpline();
+}
+
+void RenderArea::savePath()
+{
+    QFile file(filePath);
+    if(!file.open(QIODevice::WriteOnly))
+    {
+        qWarning() << file.error() << file.errorString();
+        return;
+    }
+    QDataStream out(&file);
+    for(auto i = splinePoints.begin(); i!=splinePoints.end()-1; i++)
+    {
+        write_coord(out, i->x(), i->y(),flags::next_line);
+    }
+    auto lastPt = splinePoints.end()-1;
+    write_coord(out, lastPt->x(), lastPt->y(), flags::eof);
+    file.close();
 }
 
 void RenderArea::mousePressEvent(QMouseEvent *event)
@@ -206,32 +236,13 @@ void RenderArea::loadPath()
         }
 
         QDataStream in(&file);
-        if(read_coord(in, inspath))
+        inspectionPath temPath;
+        if(read_coord(in, temPath)){}
+        for(auto &k : temPath.path)
         {
-
-            toSplinePoints(inspath, splinePoints);
-            std::cout << splinePoints.size() << std::endl;
-        };
+            emit addPointQuery(QPointF(k.x, k.y));
+        }
         file.close();
     }
-
-//        if(!file.open(QIODevice::WriteOnly))
-//        {
-//            qWarning() << file.error() << file.errorString();
-//            return;
-//        }
-//        QDataStream out(&file);
-
-//        write_coord(out, 345, 23, flags::next_line);
-//        write_coord(out, 25, 435, flags::next_line);
-//        write_coord(out, 734, 213, flags::next_line);
-//        write_coord(out, 354, 227, flags::next_line);
-//        write_coord(out, 254, 153, flags::next_line);
-//        write_coord(out, 324, 234, flags::next_line);
-//        write_coord(out, 345, 23, flags::eof);
-
-
-//        file.close();
-
-
+    updateSpline();
 }
