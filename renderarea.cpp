@@ -249,8 +249,9 @@ void RenderArea::loadPath()
 
 void RenderArea::flip()
 {
-    for(auto k = splinePoints.end(); k!=splinePoints.begin(); k--)
+    //auto splinePoints_ = splinePoints;
+    for(auto &k : splinePoints)
     {
-        emit addPointQuery(QPointF((k-1)->x(), ((k-1)->y())));
+        emit addPointQuery(QPointF(k.x(), k.y()));
     }
 }
