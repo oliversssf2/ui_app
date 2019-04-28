@@ -265,7 +265,7 @@ void RenderArea::setSaftyDist(double multiplier)
         auto slope = mySpline_->getTangent(i);
         //std::cout << slope.tangent.x() << " " << slope.tangent.y() << std::endl;
         double normal = std::atan((slope.tangent.y()/slope.tangent.x()));
-        splinePoints[i][0] = splinePoints_[i].x() + multiplier * std::cos(normal)/**(mySpline->getPosition(i).y() >= (width()/2) ? -1:1)*/;
+        splinePoints[i][0] = splinePoints_[i].x() + multiplier * std::cos(normal) * (splinePoints_[i].x() >= width()/2 ? 1 : -1)/**(mySpline->getPosition(i).y() >= (width()/2) ? -1:1)*/;
         splinePoints[i][1] = splinePoints_[i].y() - multiplier * std::sin(normal)/**(mySpline->getPosition(i).y() >= (width()/2) ? -1:1)*/;
     }
     updateSpline();
