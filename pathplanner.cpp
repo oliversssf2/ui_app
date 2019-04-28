@@ -23,6 +23,7 @@ pathPlanner::pathPlanner(QWidget *parent) :
     connect(this, & pathPlanner::savePath, rarea, &RenderArea::savePath);
     connect(rarea, &RenderArea::updateName, this, &pathPlanner::updateName);
     connect(this, &pathPlanner::flip, rarea, &RenderArea::flip);
+    connect(this, &pathPlanner::setSaftyDist, rarea, &RenderArea::setSaftyDist);
 }
 
 pathPlanner::~pathPlanner()
@@ -110,4 +111,9 @@ void pathPlanner::on_pushButton_4_clicked()
 void pathPlanner::on_flipButton_clicked()
 {
     emit flip();
+}
+
+void pathPlanner::on_setSaftyDist_clicked()
+{
+    emit setSaftyDist(ui->doubleSpinBox->value());
 }

@@ -40,6 +40,7 @@ public slots:
     void loadPath();
     void savePath();
     void flip();
+    void setSaftyDist(double multiplier);
 
 signals:
     void queryIndex();

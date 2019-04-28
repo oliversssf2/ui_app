@@ -249,9 +249,24 @@ void RenderArea::loadPath()
 
 void RenderArea::flip()
 {
-    //auto splinePoints_ = splinePoints;
-    for(auto &k : splinePoints)
+    auto splinePoints_ = splinePoints;
+    for(auto k = splinePoints_.rbegin(); k != splinePoints_.rend(); k++)
     {
-        emit addPointQuery(QPointF(k.x(), k.y()));
+        emit addPointQuery(QPointF(k->x(), height()-k->y()));
     }
+}
+
+void RenderArea::setSaftyDist(double multiplier)
+{
+    auto splinePoints_ = splinePoints;
+    auto mySpline_ = mySpline;
+    for(size_t i = 0; i <= mySpline_->getMaxT(); i++)
+    {
+        auto slope = mySpline_->getTangent(i);
+        //std::cout << slope.tangent.x() << " " << slope.tangent.y() << std::endl;
+        double normal = std::atan((slope.tangent.y()/slope.tangent.x()));
+        splinePoints[i][0] = splinePoints_[i].x() + multiplier * std::cos(normal)/**(mySpline->getPosition(i).y() >= (width()/2) ? -1:1)*/;
+        splinePoints[i][1] = splinePoints_[i].y() - multiplier * std::sin(normal)/**(mySpline->getPosition(i).y() >= (width()/2) ? -1:1)*/;
+    }
+    updateSpline();
 }
