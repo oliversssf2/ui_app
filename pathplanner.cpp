@@ -24,6 +24,7 @@ pathPlanner::pathPlanner(QWidget *parent) :
     connect(rarea, &RenderArea::updateName, this, &pathPlanner::updateName);
     connect(this, &pathPlanner::flip, rarea, &RenderArea::flip);
     connect(this, &pathPlanner::setSaftyDist, rarea, &RenderArea::setSaftyDist);
+    connect(this, &pathPlanner::selectCurrentRow, rarea, &RenderArea::selectCurrentRow);
 }
 
 pathPlanner::~pathPlanner()
@@ -116,4 +117,9 @@ void pathPlanner::on_flipButton_clicked()
 void pathPlanner::on_setSaftyDist_clicked()
 {
     emit setSaftyDist(ui->doubleSpinBox->value());
+}
+
+void pathPlanner::on_listWidget_currentRowChanged(int currentRow)
+{
+    emit selectCurrentRow(currentRow);
 }

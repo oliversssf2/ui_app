@@ -43,6 +43,8 @@ private slots:
 
     void on_setSaftyDist_clicked();
 
+    void on_listWidget_currentRowChanged(int currentRow);
+
 signals:
     void sendPlaneModel(qint32 fileindex);
     void send_index(qint32 index); // send the index of the selected item in the combobox(start from 1 not 0)
@@ -52,6 +54,7 @@ signals:
     void savePath();
     void flip();
     void setSaftyDist(double multiplier);
+    void selectCurrentRow(int currentRow);
 
 private:
     Ui::pathPlanner *ui;

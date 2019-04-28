@@ -41,6 +41,8 @@ public slots:
     void savePath();
     void flip();
     void setSaftyDist(double multiplier);
+    void selectCurrentRow(int currentRow);
+
 
 signals:
     void queryIndex();
@@ -64,6 +66,8 @@ private slots:
 
     void on_pushButton_2_clicked();
 
+    void on_checkBox_stateChanged(int arg1);
+
 private:
     Ui::RenderArea *ui;
     inspectionPath inspath;
@@ -78,6 +82,8 @@ private:
     bool initialized = false;
     bool splineReady = false;
     double pathDensity;
+
+    bool displayLine = true;
 
 };
 

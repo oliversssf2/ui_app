@@ -37,21 +37,21 @@ void RenderArea::paintEvent(QPaintEvent *event)
     penForPath.setColor(QColor(0, 204, 102));
     penForPath.setCapStyle(Qt::RoundCap);
     penForPath.setJoinStyle(Qt::RoundJoin);
-    penForPath.setWidth(6);
+    penForPath.setWidth(1);//6
 
     QPen penForRobot;
     penForRobot.setStyle(Qt::SolidLine);
     penForRobot.setColor(QColor(51, 153, 255));
     penForRobot.setCapStyle(Qt::RoundCap);
     penForRobot.setJoinStyle(Qt::RoundJoin);
-    penForRobot.setWidth(4);
+    penForRobot.setWidth(1);//4
 
     QPen penForEllipse;
     penForEllipse.setStyle(Qt::SolidLine);
     penForEllipse.setColor(QColor(255, 153, 51));
     penForEllipse.setCapStyle(Qt::RoundCap);
     penForEllipse.setJoinStyle(Qt::RoundJoin);
-    penForEllipse.setWidth(2);
+    penForEllipse.setWidth(1);//2
 
     painter.drawImage(target, plane, source);
 
@@ -59,17 +59,20 @@ void RenderArea::paintEvent(QPaintEvent *event)
     {
         if(splineReady)
         {
-            QPainterPath path;
-            painter.setPen(penForPath);
-            path.moveTo(mySpline->getPosition(0)[0], mySpline->getPosition(0)[1]);
-
-            for(double i = 0; i <= mySpline->getMaxT(); i+=0.01) // draw the path by consistently drawing straight lines between interpolated coordinate on the spline
+            if(displayLine)
             {
-                    path.lineTo(mySpline->getPosition(i)[0], mySpline->getPosition(i)[1]);
-            }
+                QPainterPath path;
+                painter.setPen(penForPath);
+                path.moveTo(mySpline->getPosition(0)[0], mySpline->getPosition(0)[1]);
 
-            path.moveTo(mySpline->getPosition(0)[0], mySpline->getPosition(0)[1]);
-            painter.drawPath(path);
+                for(double i = 0; i <= mySpline->getMaxT(); i+=0.01) // draw the path by consistently drawing straight lines between interpolated coordinate on the spline
+                {
+                        path.lineTo(mySpline->getPosition(i)[0], mySpline->getPosition(i)[1]);
+                }
+
+                path.moveTo(mySpline->getPosition(0)[0], mySpline->getPosition(0)[1]);
+                painter.drawPath(path);
+            }
 
 
             for(double i = 0.0, lastpoint = -0.01; i <= mySpline->getMaxT(); i+=0.01)
@@ -86,10 +89,11 @@ void RenderArea::paintEvent(QPaintEvent *event)
                     painter.translate(mySpline->getPosition(i)[0], mySpline->getPosition(i)[1]); //translate the painter to the goal position
                     painter.rotate(tiltDegree); //rotate the painter according to the tangent
 
-                    painter.drawRect(-10, -10, 20, 20); //draw the rectangle
+                    painter.drawRect(-25, -37, 50, 74); //draw the rectangle
                     painter.restore();// restore the saved state so the rotation and translation won't affect the next iteration
                 }
             }
+
             for(int i = 0; i < mySpline->getMaxT(); i++)
             {
                 painter.setPen(penForEllipse);
@@ -265,8 +269,21 @@ void RenderArea::setSaftyDist(double multiplier)
         auto slope = mySpline_->getTangent(i);
         //std::cout << slope.tangent.x() << " " << slope.tangent.y() << std::endl;
         double normal = std::atan((slope.tangent.y()/slope.tangent.x()));
-        splinePoints[i][0] = splinePoints_[i].x() + multiplier * std::cos(normal) * (splinePoints_[i].x() >= width()/2 ? 1 : -1)/**(mySpline->getPosition(i).y() >= (width()/2) ? -1:1)*/;
-        splinePoints[i][1] = splinePoints_[i].y() - multiplier * std::sin(normal)/**(mySpline->getPosition(i).y() >= (width()/2) ? -1:1)*/;
+        splinePoints[i][0] = splinePoints_[i].x() + multiplier * std::cos(normal) * (splinePoints_[i].x() >= width()/1.9 ? 1 : -1);
+        splinePoints[i][1] = splinePoints_[i].y() - multiplier * std::sin(normal) * (splinePoints_[i].x() >= width()/2 ? 1 : -1);
     }
     updateSpline();
+}
+
+void RenderArea::on_checkBox_stateChanged(int arg1)
+{
+    displayLine = ui->checkBox->isChecked();
+    updateSpline();
+}
+
+void RenderArea::selectCurrentRow(int currentRow)
+{
+    QPainter painter(this);
+    QRectF selectBox = QRectF(QPoint(splinePoints[currentRow].x()-30, splinePoints[currentRow].y()-30), QSizeF(60, 60));
+    painter.drawRect(selectBox);
 }
