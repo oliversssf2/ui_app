@@ -75,23 +75,33 @@ void RenderArea::paintEvent(QPaintEvent *event)
             }
 
 
-            for(double i = 0.0, lastpoint = -0.01; i <= mySpline->getMaxT(); i+=0.01)
+//            for(double i = 0.0, lastpoint = -0.01; i <= mySpline->getMaxT(); i+=0.01)
+//            {
+//                painter.setPen(penForRobot);
+//                if(mySpline->arcLength(i, lastpoint) >= pathDensity)
+//                {
+//                    lastpoint = i;
+//                    painter.save();// save the state of the painter(EG rotation, translation, penstyel blah blah blah)
+
+//                    auto slope = mySpline->getTangent(i);
+//                    auto tiltRadian = std::atan2(slope.tangent.y(), slope.tangent.x());
+//                    auto tiltDegree = qRadiansToDegrees(tiltRadian);
+//                    painter.translate(mySpline->getPosition(i)[0], mySpline->getPosition(i)[1]); //translate the painter to the goal position
+//                    painter.rotate(tiltDegree); //rotate the painter according to the tangent
+
+//                    painter.drawRect(-25, -37, 50, 74); //draw the rectangle
+//                    painter.restore();// restore the saved state so the rotation and translation won't affect the next iteration
+//                }
+//            }
+
+            for(auto i = 0; i < splinePoints.size(); i++)
             {
                 painter.setPen(penForRobot);
-                if(mySpline->arcLength(i, lastpoint) >= pathDensity)
-                {
-                    lastpoint = i;
-                    painter.save();// save the state of the painter(EG rotation, translation, penstyel blah blah blah)
-
-                    auto slope = mySpline->getTangent(i);
-                    auto tiltRadian = std::atan2(slope.tangent.y(), slope.tangent.x());
-                    auto tiltDegree = qRadiansToDegrees(tiltRadian);
-                    painter.translate(mySpline->getPosition(i)[0], mySpline->getPosition(i)[1]); //translate the painter to the goal position
-                    painter.rotate(tiltDegree); //rotate the painter according to the tangent
-
-                    painter.drawRect(-25, -37, 50, 74); //draw the rectangle
-                    painter.restore();// restore the saved state so the rotation and translation won't affect the next iteration
-                }
+                painter.save();
+                painter.translate(splinePoints[i].x(), splinePoints[i].y());
+                painter.rotate(pointRotation[i]);
+                painter.drawRect(-25, -37, 50, 74);
+                painter.restore();
             }
 
             for(int i = 0; i < mySpline->getMaxT(); i++)
@@ -123,8 +133,22 @@ void RenderArea::paintEvent(QPaintEvent *event)
                 painter.drawEllipse(QPointF(k.x(), k.y()), 10, 10);
 
             }
+            for(auto i = 0; i < splinePoints.size(); i++)
+            {
+                painter.setPen(penForRobot);
+                painter.save();
+                painter.translate(splinePoints[i].x(), splinePoints[i].y());
+                painter.rotate(pointRotation[i]);
+                painter.drawRect(-25, -37, 50, 74);
+                painter.restore();
+            }
+        }
+        if(currentRow != -1)
+        {
+            painter.drawRect(mySpline->getPosition(currentRow).x()-50, mySpline->getPosition(currentRow).y()-50, 100, 100);
         }
 
+        currentRow = -1;
         initialized = false;
         splineReady = false;
     }
@@ -215,16 +239,28 @@ void RenderArea::recieve_index(qint32 index)
 void RenderArea::removePoint(qint32 index)
 {
     splinePoints.erase(splinePoints.begin()+index);
+    pointRotation.erase(pointRotation.begin()+index);
+    updateSpline();
+}
+
+void RenderArea::addPointWithRotation(QPointF pos, int index, int rotation)
+{
+    if(index = -1) // when no points are chosen index are set to -1
+    {
+        splinePoints.push_back(QVector2D{float(pos.x()), float(pos.y())});
+        pointRotation.push_back(rotation);
+    }
+    else
+    {
+        splinePoints.insert(splinePoints.begin()+index, QVector2D{float(pos.x()), float(pos.y())});
+        pointRotation.insert(pointRotation.begin()+index, rotation);
+    }
     updateSpline();
 }
 
 void RenderArea::addPoint(QPointF pos, int index)
 {
-    if(index = -1) // when no points are chosen index are set to -1
-        splinePoints.push_back(QVector2D{float(pos.x()), float(pos.y())});
-    else
-        splinePoints.insert(splinePoints.begin()+index, QVector2D{float(pos.x()), float(pos.y())});
-    updateSpline();
+    addPointWithRotation(pos, index, 0);
 }
 
 void RenderArea::loadPath()
@@ -281,9 +317,8 @@ void RenderArea::on_checkBox_stateChanged(int arg1)
     updateSpline();
 }
 
-void RenderArea::selectCurrentRow(int currentRow)
+void RenderArea::selectCurrentRow(int currentRow_)
 {
-    QPainter painter(this);
-    QRectF selectBox = QRectF(QPoint(splinePoints[currentRow].x()-30, splinePoints[currentRow].y()-30), QSizeF(60, 60));
-    painter.drawRect(selectBox);
+    currentRow = currentRow_;
+    updateSpline();
 }

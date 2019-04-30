@@ -63,12 +63,12 @@
         </item>
         <item>
          <property name="text">
-          <string>New Item</string>
+          <string>A320</string>
          </property>
         </item>
         <item>
          <property name="text">
-          <string>New Item</string>
+          <string>A319</string>
          </property>
         </item>
        </widget>
@@ -199,9 +199,9 @@
           </widget>
          </item>
          <item row="2" column="1">
-          <widget class="QPushButton" name="enlargebutton">
+          <widget class="QPushButton" name="addPointButton">
            <property name="text">
-            <string>enlarge</string>
+            <string>addPoint</string>
            </property>
           </widget>
          </item>

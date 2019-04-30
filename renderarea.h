@@ -37,13 +37,14 @@ public slots:
     void removePoint(qint32 index);
     inline int getSplineSize(){return splinePoints.size();}
     void addPoint(QPointF pos, int index);
+    void addPointWithRotation(QPointF pos, int index, int rotation);
     void loadPath();
     void savePath();
     void flip();
     void setSaftyDist(double multiplier);
     void selectCurrentRow(int currentRow);
 
-
+    void previewBox(QPointF pos, int rotation);
 signals:
     void queryIndex();
     void updateList(qint32);
@@ -68,11 +69,13 @@ private slots:
 
     void on_checkBox_stateChanged(int arg1);
 
+
 private:
     Ui::RenderArea *ui;
     inspectionPath inspath;
     std::vector<QVector2D> splinePoints;
     std::shared_ptr<LoopingUniformCRSpline<QVector2D>> mySpline;
+    std::vector<int> pointRotation;
 
     QImage plane;
     QString imageName; // path/name of the image
@@ -84,7 +87,11 @@ private:
     double pathDensity;
 
     bool displayLine = true;
+    int currentRow = -1;
+    bool preview = false;
 
+    QPointF previewPoint;
+    int previewRotation;
 };
 
 inline void toSplinePoints(inspectionPath& inspath, std::vector<QVector2D>& splinePoints)

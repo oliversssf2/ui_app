@@ -12,19 +12,24 @@ pathPlanner::pathPlanner(QWidget *parent) :
 
     ui->listWidget->setSelectionMode(QAbstractItemView::ExtendedSelection); // enable multiple selection, returns the smallest index if only 1 index is needed
 
+    pointcreater = new pointCreater();
+    pointcreater->exec();
+    pointcreater->hide();
+
     connect(this, &pathPlanner::sendPlaneModel, rarea, &RenderArea::setAircraft);
     connect(rarea, &RenderArea::queryIndex, this, &pathPlanner::recieveIndexQuery);
     connect(this, &pathPlanner::send_index, rarea, &RenderArea::recieve_index);
     connect(rarea, &RenderArea::updateList, this, &pathPlanner::updateList);
     connect(this, &pathPlanner::removePoint, rarea, &RenderArea::removePoint);
     connect(rarea, &RenderArea::addPointQuery, this, &pathPlanner::recieveAddPointQuery);
-    connect(this, &pathPlanner::addPoint, rarea, &RenderArea::addPoint);
+    connect(this, &pathPlanner::addPoint, rarea, &RenderArea::addPointWithRotation);
     connect(this, &pathPlanner::loadPath, rarea, &RenderArea::loadPath);
     connect(this, & pathPlanner::savePath, rarea, &RenderArea::savePath);
     connect(rarea, &RenderArea::updateName, this, &pathPlanner::updateName);
     connect(this, &pathPlanner::flip, rarea, &RenderArea::flip);
     connect(this, &pathPlanner::setSaftyDist, rarea, &RenderArea::setSaftyDist);
     connect(this, &pathPlanner::selectCurrentRow, rarea, &RenderArea::selectCurrentRow);
+    connect(pointcreater, &pointCreater::addPoint, this, &pathPlanner::recieveAddPointQueryWithRotation);
 }
 
 pathPlanner::~pathPlanner()
@@ -93,14 +98,19 @@ void pathPlanner::updateList(qint32 size)
     updateName();
 }
 
-void pathPlanner::recieveAddPointQuery(QPointF pos)
+void pathPlanner::recieveAddPointQueryWithRotation(QPointF pos, int rotation)
 {
     auto index = ui->listWidget->currentRow();
     if(index >= 0)
         std::cout << "index is: " << index << std::endl;
     ui->listWidget->addItem("anything");
     updateName();
-    emit addPoint(pos, index);
+    emit addPoint(pos, index, rotation);
+}
+
+void pathPlanner::recieveAddPointQuery(QPointF pos)
+{
+    recieveAddPointQueryWithRotation(pos, 0);
 }
 
 void pathPlanner::on_pushButton_4_clicked()
@@ -122,4 +132,9 @@ void pathPlanner::on_setSaftyDist_clicked()
 void pathPlanner::on_listWidget_currentRowChanged(int currentRow)
 {
     emit selectCurrentRow(currentRow);
+}
+
+void pathPlanner::on_addPointButton_clicked()
+{
+    pointcreater->show();
 }

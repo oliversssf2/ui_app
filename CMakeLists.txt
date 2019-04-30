@@ -30,6 +30,9 @@ target_sources(application
     PRIVATE pathplanner.cpp
     PRIVATE pathplanner.h
     PRIVATE pathplanner.ui
+    PRIVATE pointcreater.h
+    PRIVATE pointcreater.cpp
+    PRIVATE pointcreater.ui
     PRIVATE "src/paths.qrc"
     PRIVATE "src/aircrafts.qrc"
     )

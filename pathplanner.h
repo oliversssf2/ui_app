@@ -13,6 +13,8 @@
 #include <helper.h>
 #include <renderarea.h>
 
+#include "pointcreater.h"
+
 namespace Ui {
 class pathPlanner;
 }
@@ -33,6 +35,7 @@ private slots:
     void recieveIndexQuery();
 
     void recieveAddPointQuery(QPointF pos);
+    void recieveAddPointQueryWithRotation(QPointF pos, int rotation);
 
     void on_pushButton_3_clicked();
     void updateList(qint32 size);
@@ -45,11 +48,13 @@ private slots:
 
     void on_listWidget_currentRowChanged(int currentRow);
 
+    void on_addPointButton_clicked();
+
 signals:
     void sendPlaneModel(qint32 fileindex);
     void send_index(qint32 index); // send the index of the selected item in the combobox(start from 1 not 0)
     void removePoint(qint32 index);
-    void addPoint(QPointF pos, int index);
+    void addPoint(QPointF pos, int index, int rotation);
     void loadPath();
     void savePath();
     void flip();
@@ -60,6 +65,7 @@ private:
     Ui::pathPlanner *ui;
     RenderArea *rarea;
     inspectionPath insPath;
+    pointCreater* pointcreater;
 };
 
 #endif // PATHPLANNER_H
