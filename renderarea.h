@@ -1,4 +1,4 @@
-#ifndef RENDERAREA_H
+﻿#ifndef RENDERAREA_H
 #define RENDERAREA_H
 
 #include <QWidget>
@@ -46,11 +46,16 @@ public slots:
 
     void previewBox(QPointF pos, int rotation);
     void stopPreview();
+    void queryPoint(int index); // for modifying point
+
+    void modifyPoint(QPointF pos, int index, int rotation);
 signals:
     void queryIndex();
     void updateList(qint32);
     void addPointQuery(QPointF pos);
+    void addPointQueryWithRotation(QPointF pos, int rotation);
     void updateName();
+    void loadPoint(QPointF pos, int rotation); //for modifying point
 
 protected:
     void paintEvent(QPaintEvent *event) override;

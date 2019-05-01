@@ -80,32 +80,33 @@ void inspectionPath::removeInspectionPoint(size_t index)
 }
 
 enum flags{next_line, eof};
-inline void write_coord(QDataStream& out, qint32 x, qint32 y, flags flag)
+inline void write_coord(QDataStream& out, qint32 x, qint32 y, qint32 rotation, flags flag)
 {
     switch(flag){
         case next_line:{
-            out << qint32(x) << qint32(y);
+            out << qint32(x) << qint32(y) << qint32(rotation);
             out << qint8(flag);
             break;
         }
         case eof:{
-            out << qint32(x) << qint32(y);
+            out << qint32(x) << qint32(y) << qint32(rotation);
             out << qint8(flag);
             break;
         }
     }
 }
 
-inline bool read_coord(QDataStream& in, inspectionPath& path)
+inline bool read_coord(QDataStream& in, inspectionPath& path, std::vector<int>& rotation)
 {
     if(in.atEnd()) {std::cerr << "EMPTY FILE" << std::endl; return false;}
-    qint32 x, y;
+    qint32 x, y, rot;
     qint8 flag;
     coord pt;
     while(true)
     {
-        in >> x >> y >> flag;
+        in >> x >> y >> rot >> flag;
         pt = coord{x,y};
+        rotation.push_back(rot);
         if(pt.valid())
             path.addInspectionPoint(pt);
         if(flag == qint8(flags::eof))

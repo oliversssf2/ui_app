@@ -60,6 +60,8 @@ signals:
     void flip();
     void setSaftyDist(double multiplier);
     void selectCurrentRow(int currentRow);
+    void modifyquery(int currentRow);
+    void setMode(int i);
 
 private:
     Ui::pathPlanner *ui;

@@ -105,7 +105,7 @@
            <x>0</x>
            <y>0</y>
            <width>251</width>
-           <height>578</height>
+           <height>579</height>
           </rect>
          </property>
          <property name="sizePolicy">
@@ -218,9 +218,6 @@
             <string>setSaftyDIst</string>
            </property>
           </widget>
-         </item>
-         <item row="0" column="1">
-          <widget class="QDoubleSpinBox" name="doubleSpinBox"/>
          </item>
         </layout>
        </widget>

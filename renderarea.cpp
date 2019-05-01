@@ -46,12 +46,26 @@ void RenderArea::paintEvent(QPaintEvent *event)
     penForRobot.setJoinStyle(Qt::RoundJoin);
     penForRobot.setWidth(1);//4
 
+    QPen penForPreview;
+    penForPreview.setStyle(Qt::SolidLine);
+    penForPreview.setColor(QColor(95, 75, 139));
+    penForPreview.setCapStyle(Qt::RoundCap);
+    penForPreview.setJoinStyle(Qt::RoundJoin);
+    penForPreview.setWidth(1);//4
+
     QPen penForEllipse;
     penForEllipse.setStyle(Qt::SolidLine);
     penForEllipse.setColor(QColor(255, 153, 51));
     penForEllipse.setCapStyle(Qt::RoundCap);
     penForEllipse.setJoinStyle(Qt::RoundJoin);
     penForEllipse.setWidth(1);//2
+
+    QPen penForSelection;
+    penForSelection.setStyle(Qt::SolidLine);
+    penForSelection.setColor(QColor(255, 0, 0));
+    penForSelection.setCapStyle(Qt::RoundCap);
+    penForSelection.setJoinStyle(Qt::RoundJoin);
+    penForSelection.setWidth(1);//4
 
     painter.drawImage(target, plane, source);
 
@@ -73,44 +87,6 @@ void RenderArea::paintEvent(QPaintEvent *event)
                 path.moveTo(mySpline->getPosition(0)[0], mySpline->getPosition(0)[1]);
                 painter.drawPath(path);
             }
-
-
-//            for(double i = 0.0, lastpoint = -0.01; i <= mySpline->getMaxT(); i+=0.01)
-//            {
-//                painter.setPen(penForRobot);
-//                if(mySpline->arcLength(i, lastpoint) >= pathDensity)
-//                {
-//                    lastpoint = i;
-//                    painter.save();// save the state of the painter(EG rotation, translation, penstyel blah blah blah)
-
-//                    auto slope = mySpline->getTangent(i);
-//                    auto tiltRadian = std::atan2(slope.tangent.y(), slope.tangent.x());
-//                    auto tiltDegree = qRadiansToDegrees(tiltRadian);
-//                    painter.translate(mySpline->getPosition(i)[0], mySpline->getPosition(i)[1]); //translate the painter to the goal position
-//                    painter.rotate(tiltDegree); //rotate the painter according to the tangent
-
-//                    painter.drawRect(-25, -37, 50, 74); //draw the rectangle
-//                    painter.restore();// restore the saved state so the rotation and translation won't affect the next iteration
-//                }
-//            }
-
-//            for(auto i = 0; i < splinePoints.size(); i++)
-//            {
-//                painter.setPen(penForRobot);
-//                painter.save();
-//                painter.translate(splinePoints[i].x(), splinePoints[i].y());
-//                painter.rotate(pointRotation[i]);
-//                painter.drawRect(-25, -37, 50, 74);
-//                painter.restore();
-//            }
-
-//            for(int i = 0; i < mySpline->getMaxT(); i++)
-//            {
-//                painter.setPen(penForEllipse);
-//                painter.drawEllipse(QPointF(mySpline->getPosition(i).x(), mySpline->getPosition(i).y()), 5, 5);
-//                painter.drawEllipse(QPointF(mySpline->getPosition(i).x(), mySpline->getPosition(i).y()), 10, 10);
-
-//            }
         }
         else
         {
@@ -146,16 +122,17 @@ void RenderArea::paintEvent(QPaintEvent *event)
         }
         if(currentRow != -1)
         {
-            painter.drawRect(mySpline->getPosition(currentRow).x()-50, mySpline->getPosition(currentRow).y()-50, 100, 100);
+            painter.setPen(penForSelection);
+            painter.drawRect(splinePoints[currentRow].x()-50, splinePoints[currentRow].y()-50, 100, 100);
         }
 
-        currentRow = -1;
+//        currentRow = -1;
         initialized = false;
         splineReady = false;
     }
     if(preview)
     {
-        painter.setPen(penForRobot);
+        painter.setPen(penForPreview);
         painter.save();
         painter.translate(previewPoint.x(), previewPoint.y());
         painter.rotate(previewRotation);
@@ -188,12 +165,11 @@ void RenderArea::savePath()
         return;
     }
     QDataStream out(&file);
-    for(auto i = splinePoints.begin(); i!=splinePoints.end()-1; i++)
+    for(size_t t = 0; t < splinePoints.size()-1; t++)
     {
-        write_coord(out, i->x(), i->y(),flags::next_line);
+        write_coord(out, splinePoints[t].x(), splinePoints[t].y(), pointRotation[t], flags::next_line);
     }
-    auto lastPt = splinePoints.end()-1;
-    write_coord(out, lastPt->x(), lastPt->y(), flags::eof);
+    write_coord(out, splinePoints[splinePoints.size()-1].x(), splinePoints[splinePoints.size()-1].y(), pointRotation[pointRotation.size()-1], flags::eof);
     file.close();
 }
 
@@ -214,14 +190,14 @@ void RenderArea::on_pushButton_clicked()
 void RenderArea::updateSpline()
 {
 
-    if(splinePoints.size() >= 1)
+    if(splinePoints.size() >= 1 && splinePoints.size() < 4)
     {
         initialized = true;
         std::cout << "LESS THAN 4 POINTS, DRAW STRAIGHT LINE INSTEAD OF SPLINE" << std::endl;
     }
-
-    if(splinePoints.size()>=4)
+    else if(splinePoints.size()>=4)
     {
+        initialized = true;
         mySpline = createSpline();
         splineReady = true;
         std::cout << mySpline->getMaxT() << std::endl;
@@ -255,7 +231,7 @@ void RenderArea::removePoint(qint32 index)
 
 void RenderArea::addPointWithRotation(QPointF pos, int index, int rotation)
 {
-    if(index = -1) // when no points are chosen index are set to -1
+    if(index == -1) // when no points are chosen index are set to -1
     {
         splinePoints.push_back(QVector2D{float(pos.x()), float(pos.y())});
         pointRotation.push_back(rotation);
@@ -273,6 +249,14 @@ void RenderArea::addPoint(QPointF pos, int index)
     addPointWithRotation(pos, index, 0);
 }
 
+void RenderArea::modifyPoint(QPointF pos, int index, int rotation)
+{
+    splinePoints[index][0] = pos.x();
+    splinePoints[index][1] = pos.y();
+    pointRotation[index] = rotation;
+    updateSpline();
+}
+
 void RenderArea::loadPath()
 {
     if(filePath.isEmpty()){ QMessageBox::warning(this, "WARNING!!!", "YOU HAVEN'T SPECIFIED THE MODEL YET");}
@@ -287,10 +271,11 @@ void RenderArea::loadPath()
 
         QDataStream in(&file);
         inspectionPath temPath;
-        if(read_coord(in, temPath)){}
-        for(auto &k : temPath.path)
+        std::vector<int> rotation;
+        if(read_coord(in, temPath, rotation)){}
+        for(size_t i = 0; i != temPath.path.size(); i++)
         {
-            emit addPointQuery(QPointF(k.x, k.y));
+            emit addPointQueryWithRotation(QPointF(temPath.path[i].x, temPath.path[i].y), rotation[i]);
         }
         file.close();
     }
@@ -300,10 +285,15 @@ void RenderArea::loadPath()
 void RenderArea::flip()
 {
     auto splinePoints_ = splinePoints;
-    for(auto k = splinePoints_.rbegin(); k != splinePoints_.rend(); k++)
+    auto pointRotation_ = pointRotation;
+    for(int i = splinePoints_.size()-1; i >= 0; i--)
     {
-        emit addPointQuery(QPointF(k->x(), height()-k->y()));
+        emit addPointQueryWithRotation(QPointF(splinePoints_[i].x(), height() - splinePoints_[i].y()), pointRotation_[i] >= 180 ? (360 - pointRotation_[i]) : (180 - pointRotation_[i]));
     }
+//    for(auto k = splinePoints_.rbegin(); k != splinePoints_.rend(); k++)
+//    {
+//        emit addPointQuery(QPointF(k->x(), height()-k->y()));
+//    }
 }
 
 void RenderArea::setSaftyDist(double multiplier)
@@ -345,5 +335,9 @@ void RenderArea::stopPreview()
 {
     preview = false;
     updateSpline();
+}
 
+void RenderArea::queryPoint(int index)
+{
+    emit loadPoint(QPointF(splinePoints[index].x(), splinePoints[index].y()), pointRotation[index]);
 }

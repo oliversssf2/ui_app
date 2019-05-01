@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>274</width>
-    <height>176</height>
+    <width>390</width>
+    <height>183</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -28,7 +28,7 @@
           </widget>
          </item>
          <item>
-          <widget class="QLabel" name="label_5">
+          <widget class="QLabel" name="currentPointIndex">
            <property name="text">
             <string>TextLabel</string>
            </property>
@@ -46,7 +46,29 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="spinBox"/>
+          <widget class="QSpinBox" name="xspinBox">
+           <property name="maximum">
+            <number>800</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <item row="0" column="0">
+            <widget class="QPushButton" name="xaddten">
+             <property name="text">
+              <string>10</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="xminusten">
+             <property name="text">
+              <string>-10</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
        </item>
@@ -60,7 +82,29 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="spinBox_2"/>
+          <widget class="QSpinBox" name="yspinBox">
+           <property name="maximum">
+            <number>800</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QGridLayout" name="gridLayout">
+           <item row="0" column="0">
+            <widget class="QPushButton" name="yaddten">
+             <property name="text">
+              <string>10</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="yminusten">
+             <property name="text">
+              <string>-10</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
        </item>
@@ -74,7 +118,29 @@
           </widget>
          </item>
          <item>
-          <widget class="QSpinBox" name="spinBox_3"/>
+          <widget class="QSpinBox" name="rotspinBox">
+           <property name="maximum">
+            <number>360</number>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QGridLayout" name="gridLayout_3">
+           <item row="0" column="0">
+            <widget class="QPushButton" name="rotaddten">
+             <property name="text">
+              <string>10</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QPushButton" name="rotminuxten">
+             <property name="text">
+              <string>-10</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
          </item>
         </layout>
        </item>

@@ -14,7 +14,6 @@ pathPlanner::pathPlanner(QWidget *parent) :
 
     pointcreater = new pointCreater();
     pointcreater->exec();
-    pointcreater->hide();
 
     connect(this, &pathPlanner::sendPlaneModel, rarea, &RenderArea::setAircraft);
     connect(rarea, &RenderArea::queryIndex, this, &pathPlanner::recieveIndexQuery);
@@ -32,6 +31,16 @@ pathPlanner::pathPlanner(QWidget *parent) :
     connect(pointcreater, &pointCreater::addPoint, this, &pathPlanner::recieveAddPointQueryWithRotation);
     connect(pointcreater, &pointCreater::previewBox, rarea, &RenderArea::previewBox);
     connect(pointcreater, &pointCreater::stopPreview, rarea, &RenderArea::stopPreview);
+    connect(rarea, &RenderArea::addPointQueryWithRotation, this, &pathPlanner::recieveAddPointQueryWithRotation);
+    connect(this, &pathPlanner::modifyquery, pointcreater, &pointCreater::modifyQuery);
+    connect(pointcreater, &pointCreater::updatePoint, rarea, &RenderArea::modifyPoint);
+
+    connect(pointcreater, &pointCreater::pointQuery, rarea, &RenderArea::queryPoint);
+    connect(rarea, &RenderArea::loadPoint, pointcreater, &pointCreater::loadPoint);
+    connect(this, &pathPlanner::setMode, pointcreater, &pointCreater::setMode);
+
+    //connect(pointcreater, &pointCreater::modifyPoint, rarea, &RenderArea::modifyPoint);
+
 }
 
 pathPlanner::~pathPlanner()
@@ -102,7 +111,7 @@ void pathPlanner::updateList(qint32 size)
 
 void pathPlanner::recieveAddPointQueryWithRotation(QPointF pos, int rotation)
 {
-    auto index = ui->listWidget->currentRow();
+    int index = ui->listWidget->currentRow();
     if(index >= 0)
         std::cout << "index is: " << index << std::endl;
     ui->listWidget->addItem("anything");
@@ -128,7 +137,11 @@ void pathPlanner::on_flipButton_clicked()
 
 void pathPlanner::on_setSaftyDist_clicked()
 {
-    emit setSaftyDist(ui->doubleSpinBox->value());
+    if(ui->listWidget->currentRow() != -1) // something is selected
+    {
+        pointcreater->show();
+        emit modifyquery(ui->listWidget->currentRow());
+    }
 }
 
 void pathPlanner::on_listWidget_currentRowChanged(int currentRow)
@@ -139,4 +152,5 @@ void pathPlanner::on_listWidget_currentRowChanged(int currentRow)
 void pathPlanner::on_addPointButton_clicked()
 {
     pointcreater->show();
+    emit setMode(0);
 }
