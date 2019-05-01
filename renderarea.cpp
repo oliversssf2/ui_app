@@ -94,23 +94,23 @@ void RenderArea::paintEvent(QPaintEvent *event)
 //                }
 //            }
 
-            for(auto i = 0; i < splinePoints.size(); i++)
-            {
-                painter.setPen(penForRobot);
-                painter.save();
-                painter.translate(splinePoints[i].x(), splinePoints[i].y());
-                painter.rotate(pointRotation[i]);
-                painter.drawRect(-25, -37, 50, 74);
-                painter.restore();
-            }
+//            for(auto i = 0; i < splinePoints.size(); i++)
+//            {
+//                painter.setPen(penForRobot);
+//                painter.save();
+//                painter.translate(splinePoints[i].x(), splinePoints[i].y());
+//                painter.rotate(pointRotation[i]);
+//                painter.drawRect(-25, -37, 50, 74);
+//                painter.restore();
+//            }
 
-            for(int i = 0; i < mySpline->getMaxT(); i++)
-            {
-                painter.setPen(penForEllipse);
-                painter.drawEllipse(QPointF(mySpline->getPosition(i).x(), mySpline->getPosition(i).y()), 5, 5);
-                painter.drawEllipse(QPointF(mySpline->getPosition(i).x(), mySpline->getPosition(i).y()), 10, 10);
+//            for(int i = 0; i < mySpline->getMaxT(); i++)
+//            {
+//                painter.setPen(penForEllipse);
+//                painter.drawEllipse(QPointF(mySpline->getPosition(i).x(), mySpline->getPosition(i).y()), 5, 5);
+//                painter.drawEllipse(QPointF(mySpline->getPosition(i).x(), mySpline->getPosition(i).y()), 10, 10);
 
-            }
+//            }
         }
         else
         {
@@ -126,22 +126,23 @@ void RenderArea::paintEvent(QPaintEvent *event)
             path.lineTo(splinePoints[0].x(), splinePoints[0].y()); // move to the first spot again to close the shape
             painter.drawPath(path);
 
-            for(auto &k : splinePoints)
-            {
-                painter.setPen(penForEllipse);
-                painter.drawEllipse(QPointF(k.x(), k.y()), 5, 5);
-                painter.drawEllipse(QPointF(k.x(), k.y()), 10, 10);
 
-            }
-            for(auto i = 0; i < splinePoints.size(); i++)
-            {
-                painter.setPen(penForRobot);
-                painter.save();
-                painter.translate(splinePoints[i].x(), splinePoints[i].y());
-                painter.rotate(pointRotation[i]);
-                painter.drawRect(-25, -37, 50, 74);
-                painter.restore();
-            }
+        }
+        for(auto &k : splinePoints)
+        {
+            painter.setPen(penForEllipse);
+            painter.drawEllipse(QPointF(k.x(), k.y()), 5, 5);
+            painter.drawEllipse(QPointF(k.x(), k.y()), 10, 10);
+
+        }
+        for(auto i = 0; i < splinePoints.size(); i++)
+        {
+            painter.setPen(penForRobot);
+            painter.save();
+            painter.translate(splinePoints[i].x(), splinePoints[i].y());
+            painter.rotate(pointRotation[i]);
+            painter.drawRect(-25, -37, 50, 74);
+            painter.restore();
         }
         if(currentRow != -1)
         {
@@ -151,6 +152,15 @@ void RenderArea::paintEvent(QPaintEvent *event)
         currentRow = -1;
         initialized = false;
         splineReady = false;
+    }
+    if(preview)
+    {
+        painter.setPen(penForRobot);
+        painter.save();
+        painter.translate(previewPoint.x(), previewPoint.y());
+        painter.rotate(previewRotation);
+        painter.drawRect(-25, -37, 50, 74);
+        painter.restore();
     }
 }
 
@@ -321,4 +331,19 @@ void RenderArea::selectCurrentRow(int currentRow_)
 {
     currentRow = currentRow_;
     updateSpline();
+}
+
+void RenderArea::previewBox(QPointF pos, int rotation)
+{
+    preview = true;
+    previewPoint = pos;
+    previewRotation = rotation;
+    updateSpline();
+}
+
+void RenderArea::stopPreview()
+{
+    preview = false;
+    updateSpline();
+
 }

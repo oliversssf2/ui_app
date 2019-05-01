@@ -45,6 +45,7 @@ public slots:
     void selectCurrentRow(int currentRow);
 
     void previewBox(QPointF pos, int rotation);
+    void stopPreview();
 signals:
     void queryIndex();
     void updateList(qint32);
@@ -88,8 +89,8 @@ private:
 
     bool displayLine = true;
     int currentRow = -1;
-    bool preview = false;
 
+    bool preview = false;
     QPointF previewPoint;
     int previewRotation;
 };

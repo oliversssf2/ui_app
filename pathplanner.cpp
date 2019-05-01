@@ -30,6 +30,8 @@ pathPlanner::pathPlanner(QWidget *parent) :
     connect(this, &pathPlanner::setSaftyDist, rarea, &RenderArea::setSaftyDist);
     connect(this, &pathPlanner::selectCurrentRow, rarea, &RenderArea::selectCurrentRow);
     connect(pointcreater, &pointCreater::addPoint, this, &pathPlanner::recieveAddPointQueryWithRotation);
+    connect(pointcreater, &pointCreater::previewBox, rarea, &RenderArea::previewBox);
+    connect(pointcreater, &pointCreater::stopPreview, rarea, &RenderArea::stopPreview);
 }
 
 pathPlanner::~pathPlanner()

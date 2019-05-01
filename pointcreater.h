@@ -17,12 +17,20 @@ public:
 
 signals:
     void addPoint(QPointF pos, int rot);
+    void previewBox(QPointF pos, int rot);
+    void stopPreview();
 
 protected:
     void reject() override;
 
 private slots:
     void on_buttonBox_accepted();
+
+    void on_spinBox_3_valueChanged(int arg1);
+
+    void on_spinBox_2_valueChanged(int arg1);
+
+    void on_spinBox_valueChanged(int arg1);
 
 private:
     Ui::pointCreater *ui;
