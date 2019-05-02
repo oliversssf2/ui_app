@@ -98,6 +98,9 @@ private:
     bool preview = false;
     QPointF previewPoint;
     int previewRotation;
+
+    int boxWidth = 50;
+    int boxHeight = 74;
 };
 
 inline void toSplinePoints(inspectionPath& inspath, std::vector<QVector2D>& splinePoints)

@@ -68,7 +68,7 @@
         </item>
         <item>
          <property name="text">
-          <string>A319</string>
+          <string>MODIFYING</string>
          </property>
         </item>
        </widget>
@@ -215,7 +215,7 @@
          <item row="0" column="0">
           <widget class="QPushButton" name="setSaftyDist">
            <property name="text">
-            <string>setSaftyDIst</string>
+            <string>modify</string>
            </property>
           </widget>
          </item>
