@@ -33,7 +33,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>ROUTE PLANNING</string>
        </property>
       </widget>
      </item>
@@ -46,7 +46,7 @@
         </sizepolicy>
        </property>
        <property name="text">
-        <string>PushButton</string>
+        <string>ARDUINO</string>
        </property>
       </widget>
      </item>

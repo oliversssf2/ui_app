@@ -1,0 +1,6 @@
+<RCC>
+    <qresource prefix="/">
+        <file>scripts/arduino.sh</file>
+        <file>scripts/rviz.sh</file>
+    </qresource>
+</RCC>

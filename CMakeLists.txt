@@ -1,7 +1,7 @@
 cmake_minimum_required(VERSION 3.1)
 
 project(ui_app)
-set(CMAKE_PREFIX_PATH "/home/fongsu/Qt/5.12.2/gcc_64/lib/cmake/Qt5")
+#set(CMAKE_PREFIX_PATH "/home/fongsu/Qt/5.12.2/gcc_64/lib/cmake/Qt5")
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOUIC ON)
 set(CMAKE_AUTOMOC ON)
@@ -35,6 +35,7 @@ target_sources(application
     PRIVATE pointcreater.ui
     PRIVATE "src/paths.qrc"
     PRIVATE "src/aircrafts.qrc"
+    PRIVATE "src/scripts.qrc"
     )
 
 target_link_libraries(application
