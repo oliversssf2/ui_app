@@ -34,8 +34,8 @@ private slots:
     void updateName();
     void recieveIndexQuery();
 
-    void recieveAddPointQuery(QPointF pos);
-    void recieveAddPointQueryWithRotation(QPointF pos, int rotation);
+    void recieveAddPointQuery(QPointF pos, bool pushBackAnyway = false);
+    void recieveAddPointQueryWithRotation(QPointF pos, int rotation, bool pushBackAnyway = false);
 
     void on_pushButton_3_clicked();
     void updateList(qint32 size);

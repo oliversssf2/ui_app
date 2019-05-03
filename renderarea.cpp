@@ -288,7 +288,7 @@ void RenderArea::flip()
     auto pointRotation_ = pointRotation;
     for(int i = splinePoints_.size()-1; i >= 0; i--)
     {
-        emit addPointQueryWithRotation(QPointF(splinePoints_[i].x(), height() - splinePoints_[i].y()), pointRotation_[i] >= 180 ? (360 - pointRotation_[i]) : (180 - pointRotation_[i]));
+        emit addPointQueryWithRotation(QPointF(splinePoints_[i].x(), height() - splinePoints_[i].y()), pointRotation_[i] >= 180 ? (360 - pointRotation_[i]) : (180 - pointRotation_[i]), true);
     }
 //    for(auto k = splinePoints_.rbegin(); k != splinePoints_.rend(); k++)
 //    {

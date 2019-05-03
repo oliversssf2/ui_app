@@ -52,8 +52,8 @@ public slots:
 signals:
     void queryIndex();
     void updateList(qint32);
-    void addPointQuery(QPointF pos);
-    void addPointQueryWithRotation(QPointF pos, int rotation);
+    void addPointQuery(QPointF pos, bool pushBackAnyway = false);
+    void addPointQueryWithRotation(QPointF pos, int rotation, bool pushBackAnyway = false);
     void updateName();
     void loadPoint(QPointF pos, int rotation); //for modifying point
 

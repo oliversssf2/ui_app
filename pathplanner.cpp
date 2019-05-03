@@ -109,9 +109,11 @@ void pathPlanner::updateList(qint32 size)
     updateName();
 }
 
-void pathPlanner::recieveAddPointQueryWithRotation(QPointF pos, int rotation)
+void pathPlanner::recieveAddPointQueryWithRotation(QPointF pos, int rotation, bool pushBackAnyway)
 {
+
     int index = ui->listWidget->currentRow();
+    if(pushBackAnyway) index = -1;
     if(index >= 0)
         std::cout << "index is: " << index << std::endl;
     ui->listWidget->addItem("anything");
@@ -119,9 +121,9 @@ void pathPlanner::recieveAddPointQueryWithRotation(QPointF pos, int rotation)
     emit addPoint(pos, index, rotation);
 }
 
-void pathPlanner::recieveAddPointQuery(QPointF pos)
+void pathPlanner::recieveAddPointQuery(QPointF pos, bool pushBackAnyway)
 {
-    recieveAddPointQueryWithRotation(pos, 0);
+    recieveAddPointQueryWithRotation(pos, 0, pushBackAnyway);
 }
 
 void pathPlanner::on_pushButton_4_clicked()

@@ -25,7 +25,7 @@ public slots:
 
 signals:
     void updatePoint(QPointF pos, int index, int rotation);
-    void addPoint(QPointF pos, int rot);
+    void addPoint(QPointF pos, int rot, bool pushBackAnyway = false);
     void previewBox(QPointF pos, int rot);
     void stopPreview();
     void pointQuery(int index);
