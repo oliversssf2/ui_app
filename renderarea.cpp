@@ -117,7 +117,8 @@ void RenderArea::paintEvent(QPaintEvent *event)
             painter.save();
             painter.translate(splinePoints[i].x(), splinePoints[i].y());
             painter.rotate(pointRotation[i]);
-            painter.drawRect(-25, -37, 50, 74);
+            //painter.drawRect(-25, -37, 50, 74);
+            painter.drawRect(-25, 0, 50, 74);
             painter.restore();
         }
         if(currentRow != -1)
@@ -136,7 +137,8 @@ void RenderArea::paintEvent(QPaintEvent *event)
         painter.save();
         painter.translate(previewPoint.x(), previewPoint.y());
         painter.rotate(previewRotation);
-        painter.drawRect(-25, -37, 50, 74);
+        //painter.drawRect(-25, -37, 50, 74);
+        painter.drawRect(-25, 0, 50, 74);
         painter.restore();
     }
 }
