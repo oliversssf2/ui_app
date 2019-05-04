@@ -19,6 +19,8 @@
 #include <spline_library/spline.h>
 #include <spline_library/splines/uniform_cr_spline.h>
 
+constexpr double Pi = 3.141592653;
+
 namespace Ui {
 class RenderArea;
 }
@@ -82,6 +84,7 @@ private:
     std::vector<QVector2D> splinePoints;
     std::shared_ptr<LoopingUniformCRSpline<QVector2D>> mySpline;
     std::vector<int> pointRotation;
+    std::vector<QPointF> centers;
 
     QImage plane;
     QString imageName; // path/name of the image

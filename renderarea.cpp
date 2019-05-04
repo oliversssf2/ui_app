@@ -121,6 +121,14 @@ void RenderArea::paintEvent(QPaintEvent *event)
             painter.drawRect(-25, 0, 50, 74);
             painter.restore();
         }
+        centers.clear();
+        for(auto i = 0; i < splinePoints.size(); i++)
+        {
+            QPointF center(splinePoints[i].x() - double(boxHeight/2) * qSin(qDegreesToRadians(double(pointRotation[i]))), splinePoints[i].y() + (double(boxHeight/2) * qCos(qDegreesToRadians(double(pointRotation[i])))));
+            centers.push_back(center);
+            qDebug() << pointRotation[i] << " cos: " << qCos(qDegreesToRadians(double(pointRotation[i])))<< " sin: " << qSin(qDegreesToRadians(double(pointRotation[i])));
+            painter.drawEllipse(center, 5, 5);
+        }
         if(currentRow != -1)
         {
             painter.setPen(penForSelection);
