@@ -5,7 +5,7 @@ MainWindow::MainWindow(QWidget *parent) :
     QMainWindow(parent),
     ui(new Ui::MainWindow)
 {
-    ui->setupUi(this);
+  ui->setupUi(this);
 }
 
 MainWindow::~MainWindow()
@@ -21,6 +21,12 @@ void MainWindow::on_pushButton_2_clicked()
 
 void MainWindow::on_pushButton_clicked()
 {
-    if(!QProcess::startDetached("/bin/sh", QStringList{QString(SCRIPTSDIR) + "/arduino.sh"}))
+    if(!QProcess::startDetached("/bin/bash", QStringList{QString(SCRIPTSDIR) + "/rviz.sh"}))
         qDebug() << "failed to RUN!!!!";
+}
+
+void MainWindow::on_pushButton_3_clicked()
+{
+  if(!QProcess::startDetached("/bin/bash", QStringList{QString(SCRIPTSDIR) + "/dynamixel.sh"}))
+      qDebug() << "failed to RUN!!!!";
 }

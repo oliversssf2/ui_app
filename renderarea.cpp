@@ -188,7 +188,7 @@ void RenderArea::mousePressEvent(QMouseEvent *event)
     QPointF pos = event->pos();
     std::cout << "pos is: "  << pos.x() << " " << pos.y() << std::endl;
     if((pos.x() <= width()) && (pos.y() <= height())) // check the validity of adding pos
-        emit addPointQuery(pos);
+        emit addPointQuery(pos, true);
 }
 
 
@@ -298,7 +298,7 @@ void RenderArea::flip()
     auto pointRotation_ = pointRotation;
     for(int i = splinePoints_.size()-1; i >= 0; i--)
     {
-        emit addPointQueryWithRotation(QPointF(splinePoints_[i].x(), height() - splinePoints_[i].y()), pointRotation_[i] >= 180 ? (360 - pointRotation_[i]) : (180 - pointRotation_[i]), true);
+        emit addPointQueryWithRotation(QPointF(splinePoints_[i].x(), height() - splinePoints_[i].y()), pointRotation_[i] > 180 ? (360 - (pointRotation_[i]-180)) : (180 - pointRotation_[i]), true);
     }
 //    for(auto k = splinePoints_.rbegin(); k != splinePoints_.rend(); k++)
 //    {
@@ -350,4 +350,20 @@ void RenderArea::stopPreview()
 void RenderArea::queryPoint(int index)
 {
     emit loadPoint(QPointF(splinePoints[index].x(), splinePoints[index].y()), pointRotation[index]);
+}
+
+void RenderArea::saveCenter(int i)
+{
+  QDir dir(CENTERSDIR);
+  filePath = dir.absoluteFilePath("%1.csv").arg(i);
+  QFile file(filePath);
+  if(!file.open(QIODevice::WriteOnly))
+  {
+      qWarning() << file.error() << file.errorString();
+      return;
+  }
+  QTextStream out(&file);
+  for(auto &k : centers)
+    out << k.x() << "," << k.y() << '\n';
+  file.close();
 }

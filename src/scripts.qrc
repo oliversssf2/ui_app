@@ -2,5 +2,6 @@
     <qresource prefix="/">
         <file>scripts/arduino.sh</file>
         <file>scripts/rviz.sh</file>
+        <file>scripts/dynamixel.sh</file>
     </qresource>
 </RCC>

@@ -38,6 +38,7 @@ pathPlanner::pathPlanner(QWidget *parent) :
     connect(pointcreater, &pointCreater::pointQuery, rarea, &RenderArea::queryPoint);
     connect(rarea, &RenderArea::loadPoint, pointcreater, &pointCreater::loadPoint);
     connect(this, &pathPlanner::setMode, pointcreater, &pointCreater::setMode);
+    connect(this, &pathPlanner::saveCenter, rarea, &RenderArea::saveCenter);
 
     //connect(pointcreater, &pointCreater::modifyPoint, rarea, &RenderArea::modifyPoint);
 
@@ -155,4 +156,9 @@ void pathPlanner::on_addPointButton_clicked()
 {
     pointcreater->show();
     emit setMode(0);
+}
+
+void pathPlanner::on_pushButton_5_clicked()
+{
+    emit saveCenter(ui->comboBox->currentIndex());
 }

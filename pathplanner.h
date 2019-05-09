@@ -50,6 +50,8 @@ private slots:
 
     void on_addPointButton_clicked();
 
+    void on_pushButton_5_clicked();
+
 signals:
     void sendPlaneModel(qint32 fileindex);
     void send_index(qint32 index); // send the index of the selected item in the combobox(start from 1 not 0)
@@ -62,6 +64,7 @@ signals:
     void selectCurrentRow(int currentRow);
     void modifyquery(int currentRow);
     void setMode(int i);
+    void saveCenter(int i);
 
 private:
     Ui::pathPlanner *ui;

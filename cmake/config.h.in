@@ -1,4 +1,4 @@
 #cmakedefine PATHSDIR "@PATHSDIR@"
 #cmakedefine AIRCRAFTSDIR "@AIRCRAFTSDIR@"
 #cmakedefine SCRIPTSDIR "@SCRIPTSDIR@"
-
+#cmakedefine CENTERSDIR "@CENTERSDIR@"

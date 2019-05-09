@@ -51,6 +51,7 @@ public slots:
     void queryPoint(int index); // for modifying point
 
     void modifyPoint(QPointF pos, int index, int rotation);
+    void saveCenter(int i);
 signals:
     void queryIndex();
     void updateList(qint32);
@@ -89,6 +90,7 @@ private:
     QImage plane;
     QString imageName; // path/name of the image
     QString filePath;
+    QString centerFilePath;
 
     QPainter* mypainter = nullptr;
     bool initialized = false;

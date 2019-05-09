@@ -36,6 +36,7 @@ target_sources(application
     PRIVATE "src/paths.qrc"
     PRIVATE "src/aircrafts.qrc"
     PRIVATE "src/scripts.qrc"
+    PRIVATE "src/centers.qrc"
     )
 
 target_link_libraries(application
