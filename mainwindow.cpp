@@ -30,3 +30,15 @@ void MainWindow::on_pushButton_3_clicked()
   if(!QProcess::startDetached("/bin/bash", QStringList{QString(SCRIPTSDIR) + "/dynamixel.sh"}))
       qDebug() << "failed to RUN!!!!";
 }
+
+void MainWindow::on_runRealsense_clicked()
+{
+  if(!QProcess::startDetached("/bin/bash", QStringList{QString(SCRIPTSDIR) + "/realsense.sh"}))
+      qDebug() << "failed to RUN!!!!";
+}
+
+void MainWindow::on_pushButton_4_clicked()
+{
+    if(!QProcess::startDetached("/bin/bash", QStringList{QString(SCRIPTSDIR) + "/car.sh"}))
+        qDebug() << "failed to RUN!!!!";
+}

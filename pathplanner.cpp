@@ -13,7 +13,7 @@ pathPlanner::pathPlanner(QWidget *parent) :
     ui->listWidget->setSelectionMode(QAbstractItemView::ExtendedSelection); // enable multiple selection, returns the smallest index if only 1 index is needed
 
     pointcreater = new pointCreater();
-    pointcreater->exec();
+    //pointcreater->exec();
 
     connect(this, &pathPlanner::sendPlaneModel, rarea, &RenderArea::setAircraft);
     connect(rarea, &RenderArea::queryIndex, this, &pathPlanner::recieveIndexQuery);

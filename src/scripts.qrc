@@ -3,5 +3,7 @@
         <file>scripts/arduino.sh</file>
         <file>scripts/rviz.sh</file>
         <file>scripts/dynamixel.sh</file>
+        <file>scripts/realsense.sh</file>
+        <file>scripts/car.sh</file>
     </qresource>
 </RCC>
